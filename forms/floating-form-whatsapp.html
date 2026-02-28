@@ -1,0 +1,241 @@
+<div class="form-container">
+    <form id="atendimentoForm1" autocomplete="off" novalidate>
+  
+      <input type="hidden" id="utm_source" name="utm_source">
+      <input type="hidden" id="utm_medium" name="utm_medium">
+      <input type="hidden" id="utm_campaign" name="utm_campaign">
+      <input type="hidden" id="utm_term" name="utm_term">
+      <input type="hidden" id="utm_content" name="utm_content">
+  
+      <div class="form-group">
+        <label class="form-label">* Nome</label>
+        <input id="nome1" required class="form-input">
+        <small id="nomeErro1" class="erro-msg">Preencha seu nome</small>
+      </div>
+  
+      <div class="form-group">
+        <label class="form-label">* CNPJ</label>
+        <input id="cnpj1" required maxlength="18" inputmode="numeric" class="form-input">
+        <small id="cnpjErro1" class="erro-msg">CNPJ inválido</small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">* WhatsApp</label>
+        <input id="whatsapp1" required maxlength="15" inputmode="numeric" class="form-input">
+        <small id="whatsappErro1" class="erro-msg">WhatsApp inválido</small>
+      </div>
+  
+      <div class="form-group">
+        <label class="form-label">* Segmento da empresa</label>
+        <input id="segmento1" required class="form-input">
+        <small id="segmentoErro1" class="erro-msg">Informe o segmento</small>
+      </div>
+  
+      <div class="form-group">
+        <label class="form-label">* Tipo de cabo procurado</label>
+        <select id="tipoCabo1" required class="form-input">
+          <option value="">Selecione</option>
+          <option>Alumínio</option>
+          <option>Cobre</option>
+          <option>Outros</option>
+        </select>
+        <small id="tipoCaboErro1" class="erro-msg">Selecione o tipo de cabo</small>
+      </div>
+  
+      <div class="form-group">
+        <label class="form-label">Descrição da necessidade</label>
+        <textarea id="descricao1" class="form-textarea"></textarea>
+      </div>
+  
+      <button type="submit" class="form-button">Enviar</button>
+    </form>
+  </div>
+  
+  <style>
+  .form-container { max-width:100%; margin:auto; background:#fff; padding:20px 30px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.1); }
+  .form-group { margin-bottom:15px; }
+  .form-label { display:block; font-size:14px; margin-bottom:5px; color:#444; }
+  .form-input { width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+  .form-textarea { width:100%; padding:10px; border:1px solid #ccc !important; border-radius:6px; font-size:14px; resize:vertical; min-height:80px; }
+  .form-button { background:#FF7C00; color:#fff; padding:12px; width:100%; border-radius:10px; font-size:16px; cursor:pointer; transition:.3s; }
+  .form-button:hover { background:#d97706; }
+  .erro-msg { color:red; display:none; font-size:13px; margin-top:5px; }
+  </style>
+  
+  <script>
+    function onlyDigits(str){
+      let out = "";
+      for(let i=0;i<str.length && out.length<14;i++){
+        const c = str.charCodeAt(i);
+        if(c>=48 && c<=57) out += str[i];
+      }
+      return out;
+    }
+    
+    /* =========================
+       CNPJ
+    ========================= */
+    function validarCNPJ(cnpj){
+      cnpj = onlyDigits(cnpj);
+      if (cnpj.length !== 14) return false;
+    
+      const repetidos = [
+        '00000000000000','11111111111111','22222222222222','33333333333333',
+        '44444444444444','55555555555555','66666666666666','77777777777777',
+        '88888888888888','99999999999999'
+      ];
+      if (repetidos.includes(cnpj)) return false;
+    
+      let tamanho = cnpj.length - 2;
+      let numeros = cnpj.substring(0, tamanho);
+      let digitos = cnpj.substring(tamanho);
+      let soma = 0;
+      let pos = tamanho - 7;
+    
+      for (let i = tamanho; i >= 1; i--){
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+    
+      let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != digitos.charAt(0)) return false;
+    
+      tamanho = tamanho + 1;
+      numeros = cnpj.substring(0, tamanho);
+      soma = 0;
+      pos = tamanho - 7;
+    
+      for (let i = tamanho; i >= 1; i--){
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+    
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != digitos.charAt(1)) return false;
+    
+      return true;
+    }
+    
+    function mascaraCNPJ(v){
+      v = onlyDigits(v).slice(0,14);
+      v = v.replace(/^(\d{2})(\d)/,"$1.$2");
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3");
+      v = v.replace(/\.(\d{3})(\d)/,".$1/$2");
+      v = v.replace(/(\d{4})(\d)/,"$1-$2");
+      return v;
+    }
+    
+    /* =========================
+       TELEFONE / WHATSAPP
+    ========================= */
+    function formatPhoneBR(d){
+      if(!d) return "";
+      if(d.length<=2) return "("+d;
+      if(d.length<=6) return "("+d.slice(0,2)+") "+d.slice(2);
+      if(d.length<=10) return "("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6);
+      return "("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7,11);
+    }
+    
+    function validarTelefoneBR(valor){
+      const digits = onlyDigits(valor);
+      return digits.length === 10 || digits.length === 11;
+    }
+    
+    /* =========================
+       UTM
+    ========================= */
+    function capturarUTMs(){
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("utm_source").value = params.get("utm_source") || "";
+      document.getElementById("utm_medium").value = params.get("utm_medium") || "";
+      document.getElementById("utm_campaign").value = params.get("utm_campaign") || "";
+      document.getElementById("utm_term").value = params.get("utm_term") || "";
+      document.getElementById("utm_content").value = params.get("utm_content") || "";
+    }
+    capturarUTMs();
+    
+    /* =========================
+       EVENT LISTENERS
+    ========================= */
+    document.getElementById("cnpj1").addEventListener("input",e=>{
+      e.target.value = mascaraCNPJ(e.target.value);
+      cnpjErro1.style.display="none";
+    });
+    
+    const whatsapp1 = document.getElementById("whatsapp1");
+    
+    whatsapp1.addEventListener("input",function(){
+      const d = onlyDigits(this.value).slice(0,11);
+      this.value = formatPhoneBR(d);
+      whatsappErro1.style.display="none";
+    });
+    
+    whatsapp1.addEventListener("paste",function(e){
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text") || "";
+      const d = onlyDigits(text).slice(0,11);
+      this.value = formatPhoneBR(d);
+    });
+    
+    ["nome1","segmento1","tipoCabo1"].forEach(id=>{
+      document.getElementById(id).addEventListener("input",()=>{
+        document.getElementById(id+"Erro1").style.display="none";
+      });
+    });
+    
+    /* =========================
+       SUBMIT
+    ========================= */
+    document.getElementById("atendimentoForm1").addEventListener("submit",async e=>{
+      e.preventDefault();
+      let valido = true;
+    
+      const nome = nome1.value.trim();
+      const cnpj = cnpj1.value.trim();
+      const whatsapp = whatsapp1.value.trim();
+      const segmento = segmento1.value.trim();
+      const tipo = tipoCabo1.value;
+      const descricao = descricao1.value.trim();
+    
+      if(!nome){ nomeErro1.style.display="block"; valido=false; }
+      if(!validarCNPJ(cnpj)){ cnpjErro1.style.display="block"; valido=false; }
+      if(!validarTelefoneBR(whatsapp)){ whatsappErro1.style.display="block"; valido=false; }
+      if(!segmento){ segmentoErro1.style.display="block"; valido=false; }
+      if(!tipo){ tipoCaboErro1.style.display="block"; valido=false; }
+    
+      if(!valido) return;
+    
+      const payload = {
+        nome,
+        cnpj: onlyDigits(cnpj),
+        whatsapp: onlyDigits(whatsapp),
+        segmento,
+        tipo,
+        descricao,
+        utm_source: utm_source.value,
+        utm_medium: utm_medium.value,
+        utm_campaign: utm_campaign.value,
+        utm_term: utm_term.value,
+        utm_content: utm_content.value
+      };
+    
+      fetch("LINK_WEBHOOK_AQUI",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      }).catch(()=>{});
+    
+      const texto =
+        `Olá, gostaria de atendimento técnico:%0A%0A`+
+        `👤 Nome: ${nome}%0A`+
+        `📱 WhatsApp: ${whatsapp}%0A`+
+        `🆔 CNPJ: ${cnpj}%0A`+
+        `🏢 Segmento: ${segmento}%0A`+
+        `🔌 Tipo de cabo: ${tipo}%0A`+
+        `✉️ Descrição: ${descricao}`;
+    
+      window.open(`https://wa.me/5511987654321?text=${texto}`,"_blank");
+    
+      atendimentoForm1.reset();
+    });
+    </script>
