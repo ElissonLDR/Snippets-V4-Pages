@@ -1,0 +1,55 @@
+<script src="https://unpkg.com/vanilla-masker/build/vanilla-masker.min.js"></script>
+
+<style>
+  .numeric-alert {
+    font-size: 12px;
+    color: red;
+    margin-top: 4px;
+    display: none;
+  }
+</style>
+
+<script>
+(function () {
+  const inputIds = ["input_1749738465"];
+
+  function applyNumberMask(input) {
+    if (input.getAttribute("data-masked") === "true") return;
+
+    input.setAttribute("type", "tel");
+    input.setAttribute("inputmode", "numeric");
+    input.setAttribute("pattern", "[0-9]*");
+    VMasker(input).maskPattern("999999999999999");
+
+    const alert = document.createElement("div");
+    alert.className = "numeric-alert";
+    alert.textContent = "Este campo aceita apenas números.";
+    input.parentNode.appendChild(alert);
+
+    input.addEventListener("input", function () {
+      const onlyNumbers = this.value.replace(/D/g, '');
+      if (this.value !== onlyNumbers) {
+        alert.style.display = "block";
+      } else {
+        alert.style.display = "none";
+      }
+      this.value = onlyNumbers;
+    });
+
+    input.setAttribute("data-masked", "true");
+  }
+
+  const interval = setInterval(() => {
+    let allFound = true;
+    inputIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        applyNumberMask(el);
+      } else {
+        allFound = false;
+      }
+    });
+    if (allFound) clearInterval(interval);
+  }, 300);
+})();
+</script>

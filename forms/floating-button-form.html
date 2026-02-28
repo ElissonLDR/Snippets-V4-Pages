@@ -1,0 +1,386 @@
+<!-- Botão flutuante do WhatsApp -->
+<div id="whatsapp-widget">
+  <a href="javascript:void(0)" class="float" id="whatsapp-button" aria-label="Botão para contato no WhatsApp">
+    <svg class="icon">
+        <path d="M.33,48.33,3.06,35.62A23.67,23.67,0,0,1,0,24,24.06,24.06,0,0,1,24.12,0h0a23.95,23.95,0,1,1,0,47.89,24.33,24.33,0,0,1-11-2.61ZM13.7,41.08l.67.36a20.3,20.3,0,0,0,9.74,2.49A20,20,0,1,0,4,24a19.78,19.78,0,0,0,2.89,10.3l.41.68L5.52,43Z" />
+        <path d="M34.67,31.75C34.22,33,32,34.21,31,34.31S30,35.12,24.5,33s-9-7.77-9.27-8.13S13,21.92,13,19.27a6.08,6.08,0,0,1,1.89-4.5,2,2,0,0,1,1.45-.67c.36,0,.72.05,1,.05s.77-.18,1.22.9,1.54,3.72,1.67,4a1,1,0,0,1,.05.95,3.53,3.53,0,0,1-.54.89c-.28.32-.58.71-.82.95s-.55.56-.24,1.09a16.48,16.48,0,0,0,3,3.73,14.93,14.93,0,0,0,4.37,2.68c.54.26.86.22,1.17-.14s1.36-1.58,1.72-2.12.72-.45,1.22-.26,3.17,1.47,3.71,1.74.9.41,1,.63A4.4,4.4,0,0,1,34.67,31.75Z" />
+    </svg>
+  </a>
+
+  <div id="whatsapp-form">
+    <form id="form-whatsapp" autocomplete="off" novalidate>
+
+      <input type="text" id="w_nome" placeholder="* Nome" required>
+      <input type="text" id="w_cnpj" placeholder="* CNPJ" required maxlength="18">
+      <input type="text" id="w_whatsapp" placeholder="* WhatsApp" required maxlength="15">
+      <input type="text" id="w_segmento" placeholder="* Segmento da empresa" required>
+
+      <select id="w_tipo" required>
+        <option value="">* Tipo de cabo</option>
+        <option>Alumínio</option>
+        <option>Cobre</option>
+        <option>Outros</option>
+      </select>
+
+      <textarea id="w_descricao" placeholder="Descrição da necessidade"></textarea>
+
+      <!-- UTMs -->
+      <input type="hidden" id="utm_source">
+      <input type="hidden" id="utm_medium">
+      <input type="hidden" id="utm_campaign">
+      <input type="hidden" id="utm_term">
+      <input type="hidden" id="utm_content">
+
+      <button type="submit">Iniciar conversa</button>
+    </form>
+  </div>
+</div>
+  
+<style>
+  :root{
+    --icon-color:#fff;
+    --icon-hover:#fff;
+    --background-color:#00c800;
+    --background-hover:#009600;
+    --form-bg:#e9fff0;
+    --border-color:#cfd8d3;
+    --focus-color:#25D366;
+  }
+  
+  /* =========================
+     BOTÃO FLUTUANTE
+  ========================= */
+  .icon{
+    width:48px;
+    height:48px;
+    transform:scale(.6);
+    fill:var(--icon-color);
+    pointer-events:none;
+  }
+  
+  .float{
+    position:fixed;
+    cursor:pointer;
+    width:60px;
+    height:60px;
+    bottom:40px;
+    right:40px;
+    background:var(--background-color);
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    animation:pulse 3s infinite;
+    transition:.3s ease;
+    z-index:99999;
+  }
+  
+  .float:hover{
+    background:var(--background-hover);
+  }
+  
+  .float:hover .icon{
+    fill:var(--icon-hover);
+  }
+  
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(0,200,0,.7)}
+    70%{box-shadow:0 0 0 18px rgba(0,200,0,0)}
+    100%{box-shadow:0 0 0 0 rgba(0,200,0,0)}
+  }
+  
+  /* =========================
+     FORM CONTAINER
+  ========================= */
+  #whatsapp-form{
+    display:none;
+    position:fixed;
+    bottom:110px;
+    right:40px;
+    background:var(--form-bg);
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+    width:280px;
+    z-index:100000;
+    animation:fadeIn .25s ease;
+    font-family:Arial, sans-serif;
+  }
+  
+  /* =========================
+     INPUTS / SELECT / TEXTAREA
+  ========================= */
+  #whatsapp-form input,
+  #whatsapp-form select,
+  #whatsapp-form textarea{
+    width:100%;
+    margin-bottom:12px;
+    padding:10px 12px;
+    border:1px solid var(--border-color);
+    border-radius:10px;
+    font-size:14px;
+    outline:none;
+    background:#fff;
+    box-sizing:border-box;
+    transition:.2s ease;
+  }
+  
+  /* Remove estilo padrão feio do select */
+  #whatsapp-form select{
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    cursor:pointer;
+  }
+  
+  /* Textarea ajuste */
+  #whatsapp-form textarea{
+    resize:vertical;
+    min-height:70px;
+  }
+  
+  /* Focus elegante */
+  #whatsapp-form input:focus,
+  #whatsapp-form select:focus,
+  #whatsapp-form textarea:focus{
+    border-color:var(--focus-color);
+    box-shadow:0 0 0 2px rgba(37,211,102,.15);
+  }
+  
+  /* =========================
+     BOTÃO
+  ========================= */
+  #whatsapp-form button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#25D366;
+    color:#fff;
+    transition:.2s ease;
+  }
+  
+  #whatsapp-form button:hover{
+    background:#1ebe5d;
+  }
+  
+  /* =========================
+     ANIMAÇÃO
+  ========================= */
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(8px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  
+  /* =========================
+     RESPONSIVO
+  ========================= */
+  @media(max-width:600px){
+    #whatsapp-form{
+      right:15px;
+      width:90%;
+      max-width:320px;
+    }
+    .float{
+      right:15px;
+      bottom:20px;
+    }
+  }
+  </style>
+  
+  <script>
+    const WEBHOOK = "LINK_WEBHOOK";
+    const PHONE   = "5511987654321";
+    
+    /* =========================
+       TOGGLE
+    ========================= */
+    const btn = document.getElementById("whatsapp-button");
+    const formBox = document.getElementById("whatsapp-form");
+    
+    btn.addEventListener("click",()=>{
+      formBox.style.display = formBox.style.display==="block" ? "none" : "block";
+    });
+    
+    /* =========================
+       HELPERS
+    ========================= */
+    function onlyDigits(str){
+      let out="";
+      for(let i=0;i<str.length;i++){
+        const c=str.charCodeAt(i);
+        if(c>=48&&c<=57) out+=str[i];
+      }
+      return out;
+    }
+    
+    /* =========================
+       CAPTURA UTMs (ROBUSTO)
+    ========================= */
+    function capturarUTMs(){
+      const params = new URLSearchParams(window.location.search);
+    
+      const utms = {
+        utm_source: params.get("utm_source") || "",
+        utm_medium: params.get("utm_medium") || "",
+        utm_campaign: params.get("utm_campaign") || "",
+        utm_term: params.get("utm_term") || "",
+        utm_content: params.get("utm_content") || ""
+      };
+    
+      Object.keys(utms).forEach(key=>{
+        const el=document.getElementById(key);
+        if(el) el.value=utms[key];
+      });
+    
+      return utms;
+    }
+    
+    const utmData = capturarUTMs();
+    
+    /* =========================
+       CNPJ (PADRÃO GXP)
+    ========================= */
+    function validarCNPJ(cnpj){
+      cnpj = onlyDigits(cnpj);
+    
+      if (cnpj.length !== 14) return false;
+    
+      const repetidos = [
+        '00000000000000','11111111111111','22222222222222',
+        '33333333333333','44444444444444','55555555555555',
+        '66666666666666','77777777777777','88888888888888',
+        '99999999999999'
+      ];
+    
+      if (repetidos.includes(cnpj)) return false;
+    
+      let tamanho = cnpj.length - 2;
+      let numeros = cnpj.substring(0, tamanho);
+      let digitos = cnpj.substring(tamanho);
+      let soma = 0;
+      let pos = tamanho - 7;
+    
+      for (let i = tamanho; i >= 1; i--){
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+    
+      let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != digitos.charAt(0)) return false;
+    
+      tamanho++;
+      numeros = cnpj.substring(0, tamanho);
+      soma = 0;
+      pos = tamanho - 7;
+    
+      for (let i = tamanho; i >= 1; i--){
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+      }
+    
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      return resultado == digitos.charAt(1);
+    }
+    
+    function mascaraCNPJ(v){
+      v = onlyDigits(v).slice(0,14);
+      v = v.replace(/^(\d{2})(\d)/,"$1.$2");
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/,"$1.$2.$3");
+      v = v.replace(/\.(\d{3})(\d)/,".$1/$2");
+      v = v.replace(/(\d{4})(\d)/,"$1-$2");
+      return v;
+    }
+    
+    const cnpjInput=document.getElementById("w_cnpj");
+    cnpjInput.addEventListener("input",()=>{
+      cnpjInput.value=mascaraCNPJ(cnpjInput.value);
+    });
+    
+    /* =========================
+       TELEFONE / WHATSAPP
+    ========================= */
+    function formatPhoneBR(d){
+      if(!d) return "";
+      if(d.length<=2) return "("+d;
+      if(d.length<=6) return "("+d.slice(0,2)+") "+d.slice(2);
+      if(d.length<=10) return "("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6);
+      return "("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7,11);
+    }
+    
+    function validarTelefoneBR(v){
+      const d=onlyDigits(v);
+      return d.length===10 || d.length===11;
+    }
+    
+    const telInput=document.getElementById("w_whatsapp");
+    telInput.addEventListener("input",()=>{
+      telInput.value=formatPhoneBR(onlyDigits(telInput.value).slice(0,11));
+    });
+    
+    /* =========================
+       SUBMIT
+    ========================= */
+    document.getElementById("form-whatsapp").addEventListener("submit",async(e)=>{
+      e.preventDefault();
+    
+      const nome=document.getElementById("w_nome").value.trim();
+      const cnpj=document.getElementById("w_cnpj").value.trim();
+      const whatsapp=document.getElementById("w_whatsapp").value.trim();
+      const segmento=document.getElementById("w_segmento").value.trim();
+      const tipo=document.getElementById("w_tipo").value;
+      const descricao=document.getElementById("w_descricao").value.trim();
+    
+      if(!nome || !segmento || !tipo){
+        alert("Preencha os campos obrigatórios.");
+        return;
+      }
+    
+      if(!validarCNPJ(cnpj)){
+        alert("CNPJ inválido.");
+        return;
+      }
+    
+      if(!validarTelefoneBR(whatsapp)){
+        alert("WhatsApp inválido.");
+        return;
+      }
+    
+      const payload={
+        nome,
+        cnpj:onlyDigits(cnpj),
+        whatsapp:onlyDigits(whatsapp),
+        segmento,
+        tipo,
+        descricao,
+        ...utmData,
+        data_criacao:new Date().toISOString(),
+        data_unix:Date.now()
+      };
+    
+      await fetch(WEBHOOK,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      }).catch(()=>{});
+    
+      const texto=
+      `Olá, gostaria de atendimento técnico:%0A%0A`+
+      `👤 Nome: ${nome}%0A`+
+      `📱 WhatsApp: ${whatsapp}%0A`+
+      `🆔 CNPJ: ${cnpj}%0A`+
+      `🏢 Segmento: ${segmento}%0A`+
+      `🔌 Tipo de cabo: ${tipo}%0A`+
+      `✉️ Descrição: ${descricao}`;
+    
+      window.open(`https://wa.me/${PHONE}?text=${texto}`,"_blank");
+    
+      formBox.style.display="none";
+      e.target.reset();
+    });
+    </script>
+    
+  

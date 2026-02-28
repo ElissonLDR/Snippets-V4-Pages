@@ -1,0 +1,66 @@
+<!-- Link da LP: https://lp.v4amaral.com.br/b4/gestor-icp -->
+
+<link rel="stylesheet" href="https://unpkg.com/swiper@11.2.6/swiper-bundle.min.css" media="all" onload="this.onload=null;this.media='all';">
+<noscript><link rel="stylesheet" href="https://unpkg.com/swiper@11.2.6/swiper-bundle.min.css"></noscript>
+
+<script src="https://unpkg.com/swiper@11.2.6/swiper-bundle.min.js" async onload="initializeSwiper();"></script>
+
+<style>
+  .swiper { width: 100%; padding: 10px 0; position: relative; }
+  .swiper-slide { border-radius: 25px; overflow: hidden; }
+  .swiper-slide img { width: 100%; height: auto; display: block; border-radius: 25px; user-select: none; transition: transform 0.3s ease, filter 0.3s ease; }
+  .swiper-button-next, .swiper-button-prev { background: rgba(58, 27, 4, 0.7); padding: 8px; border-radius: 50%; color: white; margin-top: auto; top: 50%; transform: translateY(-50%); width: 25px; height: 25px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .swiper-button-next:after, .swiper-button-prev:after { font-size: 10px; font-weight: 800; }
+  .swiper-button-next:hover, .swiper-button-prev:hover { background: #000; }
+
+  /* Responsividade */
+  @media (max-width: 980px) {
+    .swiper-button-next, .swiper-button-prev { width: 30px; height: 30px; }
+  }
+
+  @media (max-width: 600px) {
+    .swiper-button-next, .swiper-button-prev { width: 25px; height: 25px; }
+  }
+</style>
+
+<div class="swiper">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-7caf96716bb2c2db6e57b09bd57b44b1.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-ef983244231164c9b1378afdcbc8237d.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-fd16ffb1805ba816b6f4f9ad9d088d6e.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-1821eb7500157739a728ed6fdccce38d.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-4b924dc6f92158c5f9affbee9df43d29.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-13b3ecc1bb153190a04d87cfe44835b8.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-7a88e07d5d385f0a77f4e565b03d604d.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-df94ece29dfacdbcaed2a6a7ffd2c41f.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-89356eb5ed93c70a8232fca20eb9c1c6.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-b441c78cbe36cecc74d1e832e1e916ed.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-540cecd25ab411016968f6764b3e429e.webp" alt="Logotipo clientes" /></div>
+  <div class="swiper-slide"><img loading="lazy" src="https://cdn.greatsoftwares.com.br/arquivos/paginas_editor/443457-8961585819cf6be28a6cbf364c4ecd0b.webp" alt="Logotipo clientes" /></div>
+  </div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>
+
+<script>
+  function initializeSwiper() {
+  new Swiper(".swiper", {
+    loop: true,
+    slidesPerView: 6,
+    spaceBetween: 10,
+    autoplay: {
+      delay: 500,
+      disableOnInteraction: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      0: { slidesPerView: 2 },
+      600: { slidesPerView: 3 },
+      980: { slidesPerView: 6 },
+    },
+  });
+}
+</script>

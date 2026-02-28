@@ -1,0 +1,213 @@
+<!-- Botão flutuante do WhatsApp -->
+<div id="whatsapp-widget">
+  <a href="javascript:void(0)" class="float" id="whatsapp-button" aria-label="Botão para contato no WhatsApp">
+    <svg class="icon" viewBox="0 0 48 48">
+      <path d="M.33,48.33,3.06,35.62A23.67,23.67,0,0,1,0,24,24.06,24.06,0,0,1,24.12,0h0a23.95,23.95,0,1,1,0,47.89,24.33,24.33,0,0,1-11-2.61ZM13.7,41.08l.67.36a20.3,20.3,0,0,0,9.74,2.49A20,20,0,1,0,4,24a19.78,19.78,0,0,0,2.89,10.3l.41.68L5.52,43Z"/>
+      <path d="M34.67,31.75C34.22,33,32,34.21,31,34.31S30,35.12,24.5,33s-9-7.77-9.27-8.13S13,21.92,13,19.27a6.08,6.08,0,0,1,1.89-4.5,2,2,0,0,1,1.45-.67c.36,0,.72.05,1,.05s.77-.18,1.22.9,1.54,3.72,1.67,4a1,1,0,0,1,.05.95,3.53,3.53,0,0,1-.54.89c-.28.32-.58.71-.82.95s-.55.56-.24,1.09a16.48,16.48,0,0,0,3,3.73,14.93,14.93,0,0,0,4.37,2.68c.54.26.86.22,1.17-.14s1.36-1.58,1.72-2.12.72-.45,1.22-.26,3.17,1.47,3.71,1.74.9.41,1,.63A4.4,4.4,0,0,1,34.67,31.75Z"/>
+    </svg>
+  </a>
+
+  <div id="whatsapp-form">
+    <form id="form-whatsapp" novalidate>
+      <input type="text" id="nome" placeholder="Nome *" required>
+      <small id="err-nome" class="erro"></small>
+
+      <input type="tel" id="telefone" placeholder="Telefone (DDD + número) *" required maxlength="15">
+      <small id="err-telefone" class="erro"></small>
+
+      <textarea id="mensagem" placeholder="Mensagem ou produto desejado *" required></textarea>
+      <small id="err-mensagem" class="erro"></small>
+
+      <button type="submit">Iniciar conversa</button>
+    </form>
+  </div>
+</div>
+
+<style>
+:root {
+  --icon: #fff;
+  --bg: #00c800;
+  --hover: #009600;
+  --erro: #d32f2f;
+}
+
+/* BOTÃO FLUTUANTE */
+.float {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background: var(--bg);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  animation: pulse 3s infinite;
+  z-index: 99999;
+  transition: background 0.2s ease;
+}
+.float:hover { background: var(--hover); }
+.icon { width: 48px; height: 48px; transform: scale(0.6); fill: var(--icon); }
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0,200,0,1) }
+  70% { box-shadow: 0 0 0 20px rgba(0,200,0,0) }
+  100% { box-shadow: 0 0 0 0 rgba(0,200,0,0) }
+}
+
+/* FORMULÁRIO */
+#whatsapp-form {
+  display: none;
+  position: fixed;
+  bottom: 110px;
+  right: 40px;
+  width: 280px;
+  background: #e9fff0;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  z-index: 100000;
+  animation: fadeIn .3s ease;
+  box-sizing: border-box; /* impede estouro */
+}
+
+#whatsapp-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+#whatsapp-form input,
+#whatsapp-form textarea,
+#whatsapp-form button {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#whatsapp-form input:focus,
+#whatsapp-form textarea:focus {
+  outline: none;
+  border-color: #25D366;
+  box-shadow: 0 0 0 2px rgba(37,211,102,0.2);
+}
+
+#whatsapp-form textarea {
+  height: 80px;
+  resize: none;
+}
+
+#whatsapp-form button {
+  background: #25D366;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+#whatsapp-form button:hover {
+  background: #1ebe5b;
+}
+#whatsapp-form button:active {
+  transform: scale(0.98);
+}
+
+/* MENSAGEM DE ERRO */
+.erro {
+  color: var(--erro);
+  font-size: 12px;
+  margin: -4px 0 6px;
+  display: block;
+  min-height: 14px;
+}
+
+/* ANIMAÇÃO DE ENTRADA */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 480px) {
+  #whatsapp-form {
+    right: 20px;
+    bottom: 100px;
+    width: calc(100% - 40px);
+  }
+  .float {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+</style>
+
+<script>
+  const btn = document.getElementById('whatsapp-button');
+  const form = document.getElementById('whatsapp-form');
+  const f = document.getElementById('form-whatsapp');
+
+  btn.addEventListener('click', () => {
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Máscara de telefone (BR) fluida e estável
+const tel = document.getElementById('telefone');
+
+tel.addEventListener('input', function (e) {
+  let v = e.target.value.replace(/\D/g, '').slice(0, 11); // só números, máx 11 dígitos
+  let formatted = '';
+
+  if (v.length > 2 && v.length <= 6) {
+    // (12) 3456
+    formatted = `(${v.slice(0, 2)}) ${v.slice(2)}`;
+  } else if (v.length > 6 && v.length <= 10) {
+    // (12) 3456-7890
+    formatted = `(${v.slice(0, 2)}) ${v.slice(2, 6)}-${v.slice(6)}`;
+  } else if (v.length > 10) {
+    // (12) 9 8765-4321
+    formatted = `(${v.slice(0, 2)}) ${v.slice(2, 3)} ${v.slice(3, 7)}-${v.slice(7)}`;
+  } else if (v.length > 0 && v.length <= 2) {
+    // (1
+    formatted = `(${v}`;
+  } else {
+    formatted = v;
+  }
+
+  e.target.value = formatted;
+});
+
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    const nome = document.getElementById('nome');
+    const tel = document.getElementById('telefone');
+    const msg = document.getElementById('mensagem');
+    const errNome = document.getElementById('err-nome');
+    const errTel = document.getElementById('err-telefone');
+    const errMsg = document.getElementById('err-mensagem');
+
+    // Limpa erros
+    [errNome, errTel, errMsg].forEach(e => e.textContent = '');
+
+    let valido = true;
+
+    if(!nome.value.trim()) { errNome.textContent = 'Informe seu nome.'; valido = false; }
+    if(!tel.value.trim() || tel.value.replace(/\D/g, '').length < 10) { errTel.textContent = 'Telefone incompleto. Use DDD + número.'; valido = false; }
+    if(!msg.value.trim()) { errMsg.textContent = 'Descreva sua mensagem ou produto.'; valido = false; }
+
+    if(!valido) return;
+
+    const texto = `Olá, meu nome é ${nome.value}. 📞 Telefone: ${tel.value} | 💬 Mensagem: ${msg.value}`;
+    const url = `https://api.whatsapp.com/send?phone=5511987654321&text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank');
+    f.reset();
+    form.style.display = 'none';
+  });
+</script>

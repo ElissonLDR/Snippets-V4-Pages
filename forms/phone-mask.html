@@ -1,0 +1,16 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#input_1744058939').inputmask({
+      mask: ['(99) 9999-9999', '(99) 99999-9999'],
+      keepStatic: true,
+      placeholder: ' ',
+      showMaskOnHover: false,
+      showMaskOnFocus: true,
+      onincomplete: function() {
+        $(this).val('');
+      }
+    });
+  });
+</script>

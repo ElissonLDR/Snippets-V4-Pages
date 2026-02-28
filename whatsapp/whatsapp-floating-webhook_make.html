@@ -1,0 +1,168 @@
+<!-- Botão flutuante do WhatsApp -->
+<div id="whatsapp-widget">
+  <a href="javascript:void(0)" class="float" id="whatsapp-button" aria-label="Botão para contato no WhatsApp">
+    <svg class="icon" viewBox="0 0 48 48">
+      <path d="M.33,48.33,3.06,35.62A23.67,23.67,0,0,1,0,24,24.06,24.06,0,0,1,24.12,0h0a23.95,23.95,0,1,1,0,47.89,24.33,24.33,0,0,1-11-2.61ZM13.7,41.08l.67.36a20.3,20.3,0,0,0,9.74,2.49A20,20,0,1,0,4,24a19.78,19.78,0,0,0,2.89,10.3l.41.68L5.52,43Z"/>
+      <path d="M34.67,31.75C34.22,33,32,34.21,31,34.31S30,35.12,24.5,33s-9-7.77-9.27-8.13S13,21.92,13,19.27a6.08,6.08,0,0,1,1.89-4.5,2,2,0,0,1,1.45-.67c.36,0,.72.05,1,.05s.77-.18,1.22.9,1.54,3.72,1.67,4a1,1,0,0,1,.05.95,3.53,3.53,0,0,1-.54.89c-.28.32-.58.71-.82.95s-.55.56-.24,1.09a16.48,16.48,0,0,0,3,3.73,14.93,14.93,0,0,0,4.37,2.68c.54.26.86.22,1.17-.14s1.36-1.58,1.72-2.12.72-.45,1.22-.26,3.17,1.47,3.71,1.74.9.41,1,.63A4.4,4.4,0,0,1,34.67,31.75Z"/>
+    </svg>
+  </a>
+
+  <div id="whatsapp-form">
+    <form id="form-whatsapp" autocomplete="off" novalidate>
+      <input type="text" id="cnpj" placeholder="Digite o CNPJ" maxlength="18" inputmode="numeric" required>
+
+      <input type="text" id="tipo_cabo" placeholder="Tipo de cabo que precisa" required>
+
+      <select id="volume" required>
+        <option value="" disabled selected>Volume aproximado do projeto</option>
+        <option value="Até 500m">Até 500m</option>
+        <option value="501-2000m">501-2000m</option>
+        <option value="Acima de 2000m">Acima de 2000m</option>
+      </select>
+
+      <select id="segmento" required>
+        <option value="" disabled selected>Qual o seu segmento?</option>
+        <option value="Indústria">Indústria</option>
+        <option value="Construção Civil">Construção Civil</option>
+        <option value="Energia Solar">Energia Solar</option>
+        <option value="Revenda">Revenda</option>
+        <option value="Outros">Outros</option>
+      </select>
+
+      <select id="urgencia" required>
+        <option value="" disabled selected>Qual a sua urgência?</option>
+        <option value="Imediata">Imediata</option>
+        <option value="Neste mês">Neste mês</option>
+        <option value="Próximos 3 meses">Próximos 3 meses</option>
+      </select>
+
+      <input type="hidden" id="utm_source" value="">
+
+      <button type="submit">Iniciar conversa</button>
+    </form>
+  </div>
+</div>
+
+<style>
+  :root{--icon-color:#fff;--icon-hover:#fff;--background-color:#00c800;--background-hover:#009600}
+  .icon{width:48px;height:48px;transform:scale(.6);fill:var(--icon-color);pointer-events:none}
+  .float{position:fixed;cursor:pointer;width:60px;height:60px;bottom:40px;right:40px;transition:1s;background:var(--background-color);border-radius:50px;animation:pulse 3s infinite;z-index:99999;display:flex;justify-content:center;align-items:center}
+  .float:hover{background:var(--background-hover)} .float:hover .icon{fill:var(--icon-hover)}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,200,0,1)}70%{box-shadow:0 0 0 20px rgba(0,200,0,0)}100%{box-shadow:0 0 0 0 rgba(0,200,0,0)}}
+  #whatsapp-form{display:none;position:fixed;bottom:110px;right:40px;background:#e9fff0;padding:15px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.2);width:270px;z-index:100000;animation:fadeIn .3s ease}
+  #whatsapp-form input,#whatsapp-form select,#whatsapp-form button{width:100%;margin-bottom:10px;padding:8px;border:1px solid #ccc;border-radius:6px;font-size:14px}
+  #whatsapp-form button{background:#25D366;color:#fff;border:none;cursor:pointer;font-weight:bold}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+<script>
+  const PHONE = "5511987654321"; 
+  const btn = document.getElementById('whatsapp-button');
+  const formBox = document.getElementById('whatsapp-form');
+  const formulario = document.getElementById('form-whatsapp');
+
+  // === Captura da UTM Source ===
+  const qs = new URLSearchParams(window.location.search);
+  document.getElementById('utm_source').value = qs.get("utm_source") || "Não identificado";
+
+  btn.addEventListener('click', () => {
+    formBox.style.display = formBox.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // === Validação de CNPJ ===
+  function validarCNPJ(cnpj){
+    cnpj = cnpj.replace(/D/g,"");
+    if (cnpj.length!==14) return false;
+    if (/^(.)1+$/.test(cnpj)) return false;
+
+    let tamanho = 12, numeros = cnpj.substring(0,tamanho), digitos = cnpj.substring(tamanho), soma = 0, pos = tamanho-7;
+    for (let i=tamanho;i>=1;i--){ soma += numeros.charAt(tamanho-i)*pos--; if (pos<2) pos=9; }
+    let resultado = soma%11<2?0:11-(soma%11);
+    if (resultado != digitos.charAt(0)) return false;
+
+    tamanho = 13; numeros = cnpj.substring(0,tamanho); soma = 0; pos = tamanho-7;
+    for (let i=tamanho;i>=1;i--){ soma += numeros.charAt(tamanho-i)*pos--; if (pos<2) pos=9; }
+    resultado = soma%11<2?0:11-(soma%11);
+    if (resultado != digitos.charAt(1)) return false;
+    return true;
+  }
+
+  async function verificarCNPJ(cnpj){
+    cnpj = cnpj.replace(/D/g,"");
+    try{
+      const r = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+      if(!r.ok) return null;
+      return await r.json();
+    }catch(e){ console.error(e); return null; }
+  }
+
+  formulario.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+
+    const cnpjMask = document.getElementById('cnpj').value.trim();
+    const tipoCabo = document.getElementById('tipo_cabo').value.trim();
+    const volume = document.getElementById('volume').value;
+    const segmento = document.getElementById('segmento').value;
+    const urgencia = document.getElementById('urgencia').value;
+    const utm = document.getElementById('utm_source').value;
+
+    if(!cnpjMask || !tipoCabo || !volume || !segmento || !urgencia){
+      alert("Preencha todos os campos corretamente.");
+      return;
+    }
+    if(!validarCNPJ(cnpjMask)){
+      alert("CNPJ inválido. Confira e tente novamente.");
+      return;
+    }
+
+    const dados = await verificarCNPJ(cnpjMask);
+    if(!dados || dados.error){
+      alert("CNPJ não encontrado na Receita.");
+      return;
+    }
+
+    const cnpjDigits = cnpjMask.replace(/D/g,'');
+    const razao = encodeURIComponent(dados.razao_social || "Não encontrada");
+
+    const texto =
+      `*Novo contato pelo site*%0A` +
+      `*CNPJ:* ${cnpjDigits}%0A` +
+      `*Razão Social:* ${razao}%0A` +
+      `*Tipo de cabo:* ${encodeURIComponent(tipoCabo)}%0A` +
+      `*Volume:* ${encodeURIComponent(volume)}%0A` +
+      `*Segmento:* ${encodeURIComponent(segmento)}%0A` +
+      `*Urgência:* ${encodeURIComponent(urgencia)}%0A` +
+      `*Origem (UTM Source):* ${encodeURIComponent(utm)}`;
+
+    const url = `https://api.whatsapp.com/send/?phone=${PHONE}&text=${texto}`;
+    // === Enviar dados para o webhook MAKE ===
+fetch("AQUI_LINK_WEBHOOK", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    cnpj: cnpjDigits,
+    razao_social: dados.razao_social || "Não encontrada",
+    tipo_cabo: tipoCabo,
+    volume: volume,
+    segmento: segmento,
+    urgencia: urgencia,
+    utm_source: utm,
+    data_envio: new Date().toISOString()
+  })
+})
+.then(r => console.log("Enviado ao Make:", r.status))
+.catch(err => console.error("Erro ao enviar ao Make:", err));
+
+    window.open(url,'_blank');
+    formBox.style.display = 'none';
+  });
+
+  document.getElementById('cnpj').addEventListener('input', function(e){
+    let v = e.target.value.replace(/D/g,"").slice(0,14);
+    if (v.length<=2){ e.target.value = v; }
+    else if (v.length<=5){ e.target.value = v.replace(/^(d{2})(d{0,3})/, "$1.$2"); }
+    else if (v.length<=8){ e.target.value = v.replace(/^(d{2})(d{3})(d{0,3})/, "$1.$2.$3"); }
+    else if (v.length<=12){ e.target.value = v.replace(/^(d{2})(d{3})(d{3})(d{0,4})/, "$1.$2.$3/$4"); }
+    else { e.target.value = v.replace(/^(d{2})(d{3})(d{3})(d{4})(d{0,2})/, "$1.$2.$3/$4-$5"); }
+  });
+</script>

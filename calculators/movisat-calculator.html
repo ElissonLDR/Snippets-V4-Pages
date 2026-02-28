@@ -1,0 +1,284 @@
+<!-- Link da LP: https://lp.movisat.com.br/calculadora -->
+
+<style>.calc-frota{--bg:#0f172a;--fg:#0b1222;--text:#e5e7eb;--muted:#94a3b8;--brand:#22c55e;--brand-2:#16a34a;--line:#1e293b;--danger:#ef4444;--radius:12px;--shadow:0 6px 24px rgba(0,0,0,.35)}.calc-frota body{background:linear-gradient(120deg,var(--bg),#0b1222);color:var(--text);margin:0}.calc-frota .container{margin:0 auto}.calc-frota .card{background:linear-gradient(180deg,var(--fg),#0b1324);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.calc-frota h2{margin:0 0 20px;font-size:22px;color:#fff;font-weight:600}.calc-frota .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:780px){.calc-frota .grid{grid-template-columns:1fr}}.calc-frota label{display:block;margin-bottom:6px;font-weight:600;color:#fff;font-size:16px}.calc-frota .input{width:100%;padding:12px 14px;border-radius:10px;background:#0b1324;border:1px solid #1f2a44;color:#fff;outline:none;font-size:15px}.calc-frota .input:focus{border-color:#2dd4bf;box-shadow:0 0 0 3px #2dd4bf22}.calc-frota .hint{color:var(--muted);font-size:14px;display:block;margin-top:4px}.calc-frota .actions{display:flex;justify-content:flex-end;margin-top:20px}.calc-frota .btn{border:none;padding:12px 18px;border-radius:10px;cursor:pointer;font-weight:600;transition:background .2s,transform .1s}.calc-frota .btn--brand{background:var(--brand);color:#052e16}.calc-frota .btn--brand:hover{background:var(--brand-2)}.calc-frota .btn:active{transform:translateY(1px)}.calc-frota .msg{font-size:14px;margin-top:10px;opacity:0;transition:opacity .3s ease}.calc-frota .msg.show{opacity:1}.calc-frota .msg.error{color:var(--danger)}.calc-frota .msg.success{color:var(--brand)}.calc-frota .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(2,6,23,.65);backdrop-filter:blur(4px);z-index:999}.calc-frota .modal .box{width:min(500px,90vw);background:linear-gradient(180deg,var(--fg),#0b1324);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.calc-frota .modal h3{margin:0 0 10px;font-size:22px;color:#fff;font-weight:600}.calc-frota .modal .row{margin-bottom:14px}.calc-frota .modal .foot{display:flex;justify-content:flex-end;gap:12px;margin-top:10px}.calc-frota .spinner{border:3px solid #ccc;border-top:3px solid var(--brand);border-radius:50%;width:16px;height:16px;animation:spin 1s linear infinite;display:inline-block;vertical-align:-3px;margin-right:6px}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}.calc-frota input[type=number]::-webkit-inner-spin-button,.calc-frota input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.calc-frota input[type=number]{-moz-appearance:textfield;appearance:textfield}</style>
+
+<section id="calc" class="calc-frota">
+    <div class="container">
+      <div class="card">
+        <h2>Dados da sua frota</h2>
+        <div class="grid">
+          <div>
+            <label for="qtdFrota">Quantos veículos sua frota possui?</label>
+            <input id="qtdFrota" class="input" type="number" min="1" placeholder="Ex.: 15" required>
+          </div>
+          <div>
+            <label for="kmMes">Média de KM que cada veículo roda por mês</label>
+            <input id="kmMes" class="input" type="number" min="100" placeholder="Ex.: 2500" required>
+          </div>
+          <div>
+            <label for="precoLitro">Custo médio do combustível (R$/litro)</label>
+            <input id="precoLitro" class="input" type="text" inputmode="decimal" placeholder="Ex.: 6,50" required>
+          </div>
+          <div>
+            <label for="ociosidade">Horas/dia com motor ligado parado (opcional)</label>
+            <input id="ociosidade" class="input" type="number" step="0.1" min="0" placeholder="Ex.: 1.5">
+            <small class="hint">Média do mercado: 1,5h/dia</small>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn--brand" id="verRelatorio">Ver minha economia potencial</button>
+        </div>
+        <p class="msg" id="msgStatus"></p>
+      </div>
+    </div>
+    <div class="modal" id="formLead">
+      <div class="box">
+        <h3>Seu relatório está pronto! Para onde devemos enviá-lo?</h3>
+        <form id="leadForm">
+          <div class="row">
+            <label for="nomeLead">Nome</label>
+            <input id="nomeLead" class="input" type="text" placeholder="Seu nome" required>
+          </div>
+          <div class="row">
+            <label for="emailLead">E-mail</label>
+            <input id="emailLead" class="input" type="email" placeholder="seu@email.com" required>
+          </div>
+          <div class="row">
+            <label for="foneLead">Telefone/WhatsApp</label>
+            <input id="foneLead" class="input" type="tel" placeholder="(11) 91234-5678" maxlength="15" required>
+          </div>
+          <input type="hidden" id="utm_source">
+          <input type="hidden" id="utm_medium">
+          <input type="hidden" id="utm_campaign">
+          <input type="hidden" id="utm_term">
+          <input type="hidden" id="utm_content">
+          <div class="foot">
+            <button type="button" class="btn" id="cancelLead">Cancelar</button>
+            <button type="submit" class="btn btn--brand">ENVIAR</button>
+          </div>
+          <p class="msg" id="msgForm"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const WEBHOOK_URL = "LINK_WEBHOOK";
+    
+      // ==============================
+      // 🔹 ELEMENTOS PRINCIPAIS
+      // ==============================
+      const qtdFrota = document.getElementById("qtdFrota");
+      const kmMes = document.getElementById("kmMes");
+      const precoLitro = document.getElementById("precoLitro");
+      const ociosidade = document.getElementById("ociosidade");
+      const verRelatorio = document.getElementById("verRelatorio");
+      const msgStatus = document.getElementById("msgStatus");
+      const formLead = document.getElementById("formLead");
+      const leadForm = document.getElementById("leadForm");
+      const cancelLead = document.getElementById("cancelLead");
+      const msgForm = document.getElementById("msgForm");
+      const foneLead = document.getElementById("foneLead");
+    
+      // ==============================
+      // 🔹 CAPTURA DE UTMs
+      // ==============================
+      const params = new URLSearchParams(window.location.search);
+      ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((f) => {
+        const val = params.get(f);
+        const input = document.getElementById(f);
+        if (val && input) input.value = val;
+      });
+    
+      // ==============================
+      // 🔹 FUNÇÃO: Apenas Dígitos
+      // ==============================
+      function onlyDigits(str) {
+        return str.replace(/\D/g, "");
+      }
+    
+      // ==============================
+      // 🔹 MÁSCARA DE TELEFONE
+      // ==============================
+      function onlyDigits(str) {
+            let out = ""; for (let i = 0; i < str.length && out.length < 11; i++) {
+                const c = str.charCodeAt(i);
+                if (c >= 48 && c <= 57) out += str[i];
+            } return out;
+        }
+        function formatPhoneBR(d) {
+            if (!d) return "";
+            if (d.length <= 2) return "(" + d;
+            if (d.length <= 6) return "(" + d.slice(0, 2) + ") " + d.slice(2);
+            if (d.length <= 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+            return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7, 11);
+        }
+        function applyPhoneMask() {
+            const d = onlyDigits(foneLead.value);
+            foneLead.value = formatPhoneBR(d);
+        }
+        foneLead.addEventListener("input", applyPhoneMask);
+        foneLead.addEventListener("paste", e => {
+            e.preventDefault();
+            const t = (e.clipboardData || window.clipboardData).getData("text") || "";
+            foneLead.value = formatPhoneBR(onlyDigits(t));
+        });
+
+      // ==============================
+      // 🔹 MÁSCARA DE VALOR (R$/litro)
+      // ==============================
+      function formatarValorBR(v) {
+        let out = "";
+        for (let i = 0; i < v.length; i++) {
+          const c = v.charCodeAt(i);
+          if (c >= 48 && c <= 57) out += v[i]; // mantém só números
+        }
+        if (out.length === 0) return "";
+        if (out.length === 1) return "0,0" + out;
+        if (out.length === 2) return "0," + out;
+        return out.slice(0, out.length - 2) + "," + out.slice(-2);
+      }
+    
+      precoLitro.addEventListener("focus", function () {
+        this.value = this.value.replace(/[^\d]/g, ""); // limpa tudo pra digitar livremente
+      });
+    
+      precoLitro.addEventListener("blur", function () {
+        const raw = this.value.replace(/\D/g, "");
+        this.value = formatarValorBR(raw);
+      });
+    
+      // ==============================
+      // 🔹 EXIBIR MENSAGENS DE STATUS
+      // ==============================
+      function showMsg(el, msg, type = "error") {
+        el.textContent = msg;
+        el.className = "msg " + type + " show";
+      }
+    
+      // ==============================
+      // 🔹 VALIDAR DADOS DE ENTRADA
+      // ==============================
+      function validarDados() {
+        if (!qtdFrota.value || qtdFrota.value <= 0) {
+          showMsg(msgStatus, "Informe a quantidade de veículos.");
+          return false;
+        }
+        if (!kmMes.value || kmMes.value <= 0) {
+          showMsg(msgStatus, "Informe a média de km rodados por mês.");
+          return false;
+        }
+        if (!precoLitro.value) {
+          showMsg(msgStatus, "Informe o custo médio do combustível.");
+          return false;
+        }
+        msgStatus.classList.remove("show");
+        return true;
+      }
+    
+      // ==============================
+      // 🔹 CONVERTER VALOR BR PARA NÚMERO
+      // ==============================
+      function toNumberBR(v) {
+        return Number(String(v).replace(/\./g, "").replace(",", ".")) || 0;
+      }
+    
+      // ==============================
+      // 🔹 CÁLCULO DE ECONOMIA
+      // ==============================
+      function calcular() {
+        const frota = Number(qtdFrota.value);
+        const km = Number(kmMes.value);
+        const preco = toNumberBR(precoLitro.value);
+        const oci = Number(ociosidade.value) || 0;
+    
+        const kmPorLitro = 8;
+        const percEconomiaRotas = 0.1;
+        const litrosPorHoraOciosa = 1;
+        const percReducaoOciosidade = 0.6;
+        const diasUteisMes = 22;
+        const custoManutKm = 0.12;
+        const percEconomiaManut = 0.15;
+    
+        const kmTotal = frota * km;
+        const litrosMes = kmTotal / kmPorLitro;
+        const custoCombMes = litrosMes * preco;
+        const ecoCombMes = custoCombMes * percEconomiaRotas;
+        const litrosOciosidadeMes = frota * oci * litrosPorHoraOciosa * diasUteisMes;
+        const ecoOciosaMes = litrosOciosidadeMes * preco * percReducaoOciosidade;
+        const custoManutMes = kmTotal * custoManutKm;
+        const ecoManutMes = custoManutMes * percEconomiaManut;
+        const totalAno = (ecoCombMes + ecoOciosaMes + ecoManutMes) * 12;
+    
+        return { frota, km, preco, oci, ecoCombMes, ecoOciosaMes, ecoManutMes, totalAno };
+      }
+    
+      // ==============================
+      // 🔹 ABRIR FORMULÁRIO DE LEAD
+      // ==============================
+      verRelatorio.addEventListener("click", function () {
+        if (!validarDados()) return;
+        formLead.style.display = "grid";
+      });
+    
+      // ==============================
+      // 🔹 FECHAR FORMULÁRIO DE LEAD
+      // ==============================
+      cancelLead.addEventListener("click", function () {
+        formLead.style.display = "none";
+      });
+    
+      // ==============================
+      // 🔹 ENVIO DO FORMULÁRIO DE LEAD
+      // ==============================
+      leadForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+    
+        const nome = document.getElementById("nomeLead").value.trim();
+        const email = document.getElementById("emailLead").value.trim();
+        const telefone = onlyDigits(foneLead.value);
+    
+        if (!nome) return showMsg(msgForm, "Informe seu nome.");
+        if (!email.includes("@")) return showMsg(msgForm, "Informe um e-mail válido.");
+        if (telefone.length < 10) return showMsg(msgForm, "Informe um telefone válido.");
+    
+        msgForm.innerHTML = '<span class="spinner"></span> Enviando...';
+        msgForm.className = "msg success show";
+    
+        const utms = {
+          utm_source: document.getElementById("utm_source").value,
+          utm_medium: document.getElementById("utm_medium").value,
+          utm_campaign: document.getElementById("utm_campaign").value,
+          utm_term: document.getElementById("utm_term").value,
+          utm_content: document.getElementById("utm_content").value,
+        };
+    
+        const dados = calcular();
+    
+        try {
+          const res = await fetch(WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              nome,
+              email,
+              telefone,
+              ...utms,
+              dadosFrota: dados,
+              origem: "Calculadora de Frota",
+              enviarEmail: true,
+            }),
+          });
+    
+          if (!res.ok) throw new Error("Erro no envio.");
+    
+          showMsg(msgForm, "✅ Relatório enviado com sucesso!", "success");
+          setTimeout(() => (formLead.style.display = "none"), 2500);
+        } catch (err) {
+          showMsg(msgForm, "⚠️ Falha no envio, tente novamente.", "error");
+        }
+      });
+    });
+    </script>
+    

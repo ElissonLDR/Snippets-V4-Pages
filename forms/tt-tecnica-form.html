@@ -1,0 +1,438 @@
+<!-- Link da LP: https://lp.v4amaral.com.br/tt-tecnica -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    <title>Formulário de Agendamento</title>
+</head>
+
+<body>
+
+<form id="form-agendamento" action="AQUI_LINK_FORM_SUBMIT" method="POST" data-form>
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_subject" value="Novo agendamento recebido!" />
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_autoresponse" value="Recebemos seu agendamento com sucesso! Em breve entraremos em contato.">
+    <!-- Primeira Etapa -->
+    <div id="primeira-etapa" class="form-section active">
+    <div class="form-header">
+      <h2>Agendar visita técnica</h2>
+      <small>Agende uma visita gratuitamente, sem taxas.</small>
+    </div>
+    <div class="form-field"><input type="text" id="nome" name="Nome" placeholder="Seu Nome *" required class="capitalize"></div>
+    <div class="form-field"><input type="tel" id="telefone" name="Telefone" placeholder="Telefone *" required class="telefone"></div>
+    <div class="form-field"><input type="email" id="email" name="Email" placeholder="E-mail *" required></div>
+    <div class="form-field">
+      <select id="selectLavaeseca" name="Produto" required>
+        <option value="" disabled selected>Selecione um produto *</option>
+        <option value="Lava e Seca">Lava e Seca</option>
+        <option value="Lavadora">Lavadora</option>
+        <option value="Secadora">Secadora</option>
+        <option value="Máquina de Lavar">Máquina de Lavar</option>
+      </select>
+    </div>
+    <div class="form-navigation">
+      <button type="button" class="btn-next">Iniciar agendamento</button>
+    </div>
+    <small class="footerForm msg-politica">Ao iniciar o seu agendamento você concorda com <a href="politica-de-privacidade">Política de privacidade</a>.</small>
+  </div>
+
+  <!-- Segunda Etapa -->
+  <div id="segunda-etapa" class="form-section">
+    <div class="form-header"><h2>Endereço</h2><small>Informe os dados do seu endereço</small></div>
+    <div class="form-field"><input type="text" id="cep_form" name="CEP" placeholder="Seu CEP *" required></div>
+    <div class="form-field"><input type="text" id="endereco" name="Endereço" placeholder="Endereço *" required class="capitalize"></div>
+    <div class="form-field"><input type="number" id="numeroEndereco" name="Número" placeholder="Número *" required></div>
+    <div class="form-field"><input type="text" name="Complemento" placeholder="Complemento" class="capitalize"></div>
+    <div class="form-field"><input type="text" id="bairro" name="Bairro" placeholder="Bairro *" required class="capitalize"></div>
+    <div class="form-field"><input type="text" id="cidade" name="Cidade" placeholder="Cidade / Município *" required class="capitalize"></div>
+    <div class="form-field">
+      <select id="estado" name="estado" required>
+        <option value="" disabled selected>Selecione o estado *</option>
+        <!-- todos os estados aqui -->
+        <option value="AC">Acre</option> <option value="AL">Alagoas</option> <option value="AP">Amapá</option> <option value="AM">Amazonas</option> <option value="BA">Bahia</option> <option value="CE">Ceará</option> <option value="DF">Distrito Federal</option> <option value="ES">Espírito Santo</option> <option value="GO">Goiás</option> <option value="MA">Maranhão</option> <option value="MT">Mato Grosso</option> <option value="MS">Mato Grosso do Sul</option> <option value="MG">Minas Gerais</option> <option value="PA">Pará</option> <option value="PB">Paraíba</option> <option value="PR">Paraná</option> <option value="PE">Pernambuco</option> <option value="PI">Piauí</option> <option value="RJ">Rio de Janeiro</option> <option value="RN">Rio Grande do Norte</option> <option value="RS">Rio Grande do Sul</option> <option value="RO">Rondônia</option> <option value="RR">Roraima</option> <option value="SC">Santa Catarina</option> <option value="SP">São Paulo</option> <option value="SE">Sergipe</option> <option value="TO">Tocantins</option>
+      </select>
+    </div>
+    <div class="form-navigation">
+      <button type="button" class="btn-back">Voltar</button>
+      <button type="button" class="btn-next">Continuar (2/4)</button>
+    </div>
+  </div>
+
+  <!-- Terceira Etapa -->
+  <div id="terceira-etapa" class="form-section">
+    <div class="form-header"><h2>Defeito Apresentado</h2><small>Selecione um defeito apresentado</small></div>
+    <div class="form-field">
+      <select id="selectDefeito" name="Defeito" required>
+        <option value="" disabled selected>Selecione um defeito *</option>
+        <option value="Não Liga">Não Liga</option>
+        <option value="Está Trepidando">Está Trepidando</option>
+        <option value="Porta quebrada">Porta quebrada</option>
+        <option value="Vazando água">Vazando água</option>
+        <option value="Mangueira rasgada ou furada">Mangueira rasgada ou furada</option>
+        <option value="Não centrifuga">Não centrifuga</option>
+        <option value="Não solta água">Não solta água</option>
+        <option value="Não faz o processo">Não faz o processo</option>
+        <option value="Instalação">Instalação</option>
+        <option value="Rasga roupa">Rasga Roupa</option>
+        <option value="Barulho ao centrifugar">Barulho ao centrifugar</option>
+        <option value="Barulho ao secar">Barulho ao secar</option>
+        <option value="Apresenta erro na secagem">Apresenta erro na secagem</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Seu produto possui mais de 1 ano de uso?</label>
+      <div class="radio-escolha">
+        <label><input type="radio" name="Produto possui mais de 1 ano" value="Sim" required>Sim</label>
+        <label><input type="radio" name="Produto possui mais de 1 ano" value="Não">Não</label>
+      </div>
+    </div>
+    <div class="form-navigation">
+      <button type="button" class="btn-back">Voltar</button>
+      <button type="button" class="btn-next">Continuar (3/4)</button>
+    </div>
+  </div>
+
+  <!-- Quarta Etapa -->
+  <div id="quarta-etapa" class="form-section">
+    <div class="form-header"><h2>Data e período de visita</h2><small>Selecione uma data e período para sua visita técnica</small></div>
+    <div class="form-field">
+      <select id="selectPeriodo" name="Horário" required>
+        <option value="" disabled selected>Selecione um período *</option>
+        <option value="9:00 às 17:00">9:00 às 17:00</option>
+        <option value="9:00 às 13:00">9:00 às 13:00</option>
+        <option value="12:00 às 17:00">12:00 às 17:00</option>
+        <option value="13:00 às 17:00">13:00 às 17:00</option>
+      </select>
+    </div>
+    <div class="form-field"><input type="date" id="dataVisita" name="Data Visita" required></div>
+    <div class="form-navigation">
+      <button type="button" class="btn-back">Voltar</button>
+      <button type="submit" class="btn-finish" data-button>Concluir Agendamento</button>
+    </div>
+  </div>
+</form>
+
+<div id="mensagem-sucesso" style="display:none;text-align:center;margin-top:100px;color:green;">
+  Agendamento enviado com sucesso.<br>Aguarde nosso contato.<br>
+  <button id="resetForm">Voltar ao início</button>
+</div>
+
+<style>
+.form-header {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.form-header h2,
+#mensagem-sucesso {
+  margin-bottom: 5px;
+  color: #222;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.form-header small,
+.footerForm {
+  font-size: 16px;
+  color: #666;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.footerForm.msg-politica {
+  font-size: 13px;
+}
+
+.form-section {
+  background: #fff;
+  padding: 20px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  min-height: 470px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.form-section.active {
+  display: block;
+}
+
+.form-field {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-navigation {
+  text-align: right;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.btn-submit,
+.btn-back,
+.btn-next,
+.btn-finish,
+#resetForm {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 48%;
+  margin-bottom: 10px;
+}
+
+.btn-submit,
+.btn-next,
+.btn-finish {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn-back,
+#resetForm {
+  background: #6c757d;
+  color: #fff;
+}
+
+#resetForm {
+  margin-top: 20px;
+}
+
+.radio-escolha input {
+  width: auto;
+}
+
+.radio-escolha,
+.radio-escolha label {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .form-section {
+    max-width: 319px;
+    min-height: 450px;
+  }
+}
+
+/* Estilo adicional para sucesso e erro do envio */
+.success, .error {
+  font-size: 20px;
+  margin-top: 20px;
+}
+.success {
+  color: green;
+}
+.error {
+  color: red;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Máscara telefone
+  $('.telefone').inputmask({
+    mask: ['(99) 9999-9999', '(99) 99999-9999'],
+    keepStatic: true,
+    placeholder: ' ',
+    showMaskOnHover: false,
+    showMaskOnFocus: true,
+    onincomplete: function() {
+      $(this).val('');
+    }
+  });
+
+  // Capitalizar campos
+  function capitalizeInputField(el) {
+    let words = el.value.toLowerCase().split(' ');
+    for (let i = 0; i < words.length; i++) {
+      if (words[i]) {
+        words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+      }
+    }
+    el.value = words.join(' ');
+  }
+
+  document.querySelectorAll(".capitalize").forEach(input => {
+    input.addEventListener("input", function() {
+      capitalizeInputField(this);
+    });
+  });
+
+  // Definir data mínima no calendário
+  const dateInput = document.getElementById('dataVisita');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+  }
+
+  // Buscar endereço pelo CEP
+  const cepInput = document.getElementById('cep_form');
+  if (cepInput) {
+    cepInput.addEventListener('blur', function() {
+      const cep = this.value.replace(/D/g, '');
+      if (cep.length === 8) {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+          .then(response => response.json())
+          .then(data => {
+            if (!data.erro) {
+              document.getElementById('endereco').value = data.logradouro || '';
+              document.getElementById('bairro').value = data.bairro || '';
+              document.getElementById('cidade').value = data.localidade || '';
+              document.getElementById('estado').value = data.uf || '';
+            } else {
+              alert('CEP não encontrado.');
+            }
+          })
+          .catch(() => alert('Erro ao buscar CEP.'));
+      }
+    });
+  }
+
+  // Controle das etapas
+  const sections = document.querySelectorAll(".form-section");
+  const nextBtns = document.querySelectorAll(".btn-next");
+  const backBtns = document.querySelectorAll(".btn-back");
+  const form = document.querySelector("[data-form]");
+  const successMessage = document.getElementById("mensagem-sucesso");
+  const resetBtn = document.getElementById("resetForm");
+  let currentStep = 0;
+
+  function showStep(step) {
+    sections.forEach((section, index) => {
+      section.classList.toggle("active", index === step);
+    });
+    currentStep = step;
+  }
+
+  function validateSection(section) {
+    let valid = true;
+    const fields = section.querySelectorAll("input, select");
+    fields.forEach(field => {
+      if (field.hasAttribute("required") && !field.value.trim()) {
+        field.style.borderColor = "red";
+        valid = false;
+      } else {
+        field.style.borderColor = "#ccc";
+      }
+    });
+    return valid;
+  }
+
+  nextBtns.forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      const currentSection = sections[currentStep];
+      if (validateSection(currentSection)) {
+        showStep(currentStep + 1);
+      }
+    });
+  });
+
+  backBtns.forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      if (currentStep > 0) {
+        showStep(currentStep - 1);
+      }
+    });
+  });
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      location.reload();
+    });
+  }
+
+  // Classe para envio FormSubmit AJAX
+  class FormSubmit {
+    constructor(settings) {
+      this.settings = settings;
+      this.form = document.querySelector(settings.form);
+      this.formButton = document.querySelector(settings.button);
+      if (this.form) {
+        this.url = this.form.getAttribute("action");
+      }
+      this.sendForm = this.sendForm.bind(this);
+    }
+
+    displaySuccess() {
+      this.form.style.display = "none";
+      successMessage.style.display = "block";
+    }
+
+    displayError() {
+      this.form.innerHTML = this.settings.error;
+    }
+
+    getFormObject() {
+      const formObject = {};
+      const fields = this.form.querySelectorAll("[name]");
+      fields.forEach((field) => {
+        formObject[field.getAttribute("name")] = field.value;
+      });
+      return formObject;
+    }
+
+    onSubmission(event) {
+      event.preventDefault();
+      event.target.disabled = true;
+      event.target.innerText = "Enviando...";
+    }
+
+    async sendForm(event) {
+      try {
+        this.onSubmission(event);
+        await fetch(this.url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify(this.getFormObject()),
+        });
+        this.displaySuccess();
+      } catch (error) {
+        this.displayError();
+        throw new Error(error);
+      }
+    }
+
+    init() {
+      if (this.form) this.formButton.addEventListener("click", this.sendForm);
+      return this;
+    }
+  }
+
+  const formSubmit = new FormSubmit({
+    form: "[data-form]",
+    button: "[data-button]",
+    success: "<h1 class='success'>Agendamento enviado com sucesso!</h1>",
+    error: "<h1 class='error'>Erro ao enviar seu agendamento. Tente novamente.</h1>",
+  });
+
+  formSubmit.init();
+
+  showStep(currentStep);
+});
+</script>

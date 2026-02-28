@@ -1,0 +1,164 @@
+<div class="form-atendimento-modal" style="max-width:520px;margin:auto;background:#fff;padding:25px 30px;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.12);font-family:Arial,sans-serif">
+    <h2 style="text-align:center;font-size:22px;margin-bottom:22px;color:#222">Solicitar Atendimento Técnico</h2>
+  
+    <form id="formAtendimentoModal" autocomplete="off" novalidate>
+  
+      <div class="grp">
+        <label>* Nome</label>
+        <input id="campoNomeAt">
+      </div>
+  
+      <div class="grp">
+        <label>* Telefone</label>
+        <input id="campoFoneAt" inputmode="numeric" maxlength="16">
+      </div>
+  
+      <div class="grp">
+        <label>* E-mail</label>
+        <input id="campoEmailAt" type="email">
+      </div>
+  
+      <div class="grp">
+        <label>* Equipamento</label>
+        <input id="campoEquipAt">
+      </div>
+  
+      <div class="grp">
+        <label>* Tipo de espaço</label>
+        <input id="campoEspacoAt">
+      </div>
+  
+      <input type="hidden" id="utm_source">
+      <input type="hidden" id="utm_medium">
+      <input type="hidden" id="utm_campaign">
+      <input type="hidden" id="utm_term">
+      <input type="hidden" id="utm_content">
+  
+      <button type="button" id="btnEnviarAt" class="btn-at">Enviar</button>
+    </form>
+  
+    <div class="toastErroAt" id="toastAt">Preencha os campos obrigatórios</div>
+  </div>
+  
+  <style>
+  .form-atendimento-modal{position:relative;}
+  .grp{margin-bottom:18px;}
+  .grp label{display:block;font-size:14px;color:#333;margin-bottom:6px;font-weight:600;}
+  .grp input{
+    width:100%;padding:11px 12px;border:1.6px solid #d3d3d3;border-radius:7px;
+    font-size:15px;transition:.25s;background:#fafafa;
+  }
+  .grp input:focus{border-color:#f59e0b;outline:none;background:#fff;}
+  .at-erro{border-color:#ff4040 !important;background:#ffecec !important;}
+  
+  .btn-at{
+    background:#f59e0b;color:#fff;border:none;padding:14px;width:100%;
+    border-radius:40px;font-size:17px;cursor:pointer;transition:.25s;font-weight:600;
+  }
+  .btn-at:hover{filter:brightness(.92);}
+  
+  .toastErroAt{
+    position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+    background:#ff4444;color:#fff;padding:10px 16px;border-radius:6px;
+    font-size:14px;font-weight:bold;opacity:0;transition:.3s;z-index:999999;
+  }
+  .toastErroAt.show{top:-15px;opacity:1;}
+  </style>
+  
+  <script>
+  window.DispararGTM=function(){
+    window.dataLayer=window.dataLayer||[];
+    dataLayer.push({event:'gtm.formSubmit'});
+  };
+  
+  // ---- PHONE MASK (same logic)
+  function onlyDigits(str){
+    let out=""; for(let i=0;i<str.length && out.length<11;i++){
+      const c=str.charCodeAt(i); if(c>=48 && c<=57) out+=str[i];
+    } return out;
+  }
+  function formatPhoneBR(d){
+    if(!d) return "";
+    if(d.length<=2) return "("+d;
+    if(d.length<=6) return "("+d.slice(0,2)+") "+d.slice(2);
+    if(d.length<=10) return "("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6);
+    return "("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7,11);
+  }
+  const telInput=document.getElementById("campoFoneAt");
+  telInput.addEventListener("input",()=>telInput.value=formatPhoneBR(onlyDigits(telInput.value)));
+  telInput.addEventListener("paste",e=>{
+    e.preventDefault();
+    const text=(e.clipboardData||window.clipboardData).getData("text")||"";
+    telInput.value=formatPhoneBR(onlyDigits(text));
+  });
+  
+  // ---- UTM CAPTURE
+  (function(){
+    const params=new URLSearchParams(window.location.search);
+    ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"].forEach(f=>{
+      const v=params.get(f); if(v) document.getElementById(f).value=v;
+    });
+  })();
+  
+  // ---- SUBMIT
+  document.getElementById("btnEnviarAt").addEventListener("click",async function(){
+  
+    const nome = campoNomeAt.value.trim();
+    const fone = onlyDigits(campoFoneAt.value);
+    const email = campoEmailAt.value.trim();
+    const equip = campoEquipAt.value.trim();
+    const espaco = campoEspacoAt.value.trim();
+  
+    const campos = [
+      {el:campoNomeAt,val:nome},
+      {el:campoFoneAt,val:fone.length>=10},
+      {el:campoEmailAt,val:email.includes("@")},
+      {el:campoEquipAt,val:equip},
+      {el:campoEspacoAt,val:espaco}
+    ];
+  
+    let erroCampo = null;
+    campos.forEach(c=>{
+      if(!c.val && !erroCampo) erroCampo=c.el;
+      c.el.classList.toggle("at-erro",!c.val);
+    });
+  
+    if(erroCampo){
+      const toast=document.getElementById("toastAt");
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"),2200);
+      erroCampo.scrollIntoView({behavior:"smooth",block:"center"});
+      return;
+    }
+  
+    const dados = {
+      nome,email,
+      telefone:"55"+fone,
+      equipamento:equip,
+      tipo_espaco:espaco,
+      utm_source:utm_source.value,
+      utm_medium:utm_medium.value,
+      utm_campaign:utm_campaign.value,
+      utm_term:utm_term.value,
+      utm_content:utm_content.value
+    };
+  
+    fetch("WEBHOOK_N8N",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(dados)});
+    fetch("WEBHOOK_MAKE",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(dados)});
+  
+    if(typeof window.EnviarActive == 'function'){ EnviarActive(); }
+    DispararGTM();
+  
+    const msg = encodeURIComponent(
+  `*Solicitação de Atendimento Técnico*
+  *Nome:* ${nome}
+  *Telefone:* (${campoFoneAt.value})
+  *E-mail:* ${email}
+  *Equipamento:* ${equip}
+  *Tipo de Espaço:* ${espaco}`
+    );
+  
+    window.open(`https://wa.me/5511987654321?text=${msg}`, "_blank");
+  });
+  </script>
+  
