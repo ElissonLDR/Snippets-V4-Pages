@@ -1,0 +1,253 @@
+<section id="secao-cep-netwave">
+
+    <div class="layout-grid">
+  
+      <div class="left-col">
+        <h2 class="titulo-cep">
+    Digite seu CEP abaixo e saiba na hora se a <span class="destaque">ultravelocidade da Netwave</span> já chegou na sua rua
+    em <span class="destaque-soft">Itanhaém</span> ou <span class="destaque-soft">Mongaguá</span>.
+  </h2>
+  
+        <div class="cep-wrapper">
+          <div class="cep-input-box">
+            <input type="text" id="cepInput" placeholder="Digite seu CEP" maxlength="9">
+            <button id="btnVerificar" disabled>Verificar</button>
+          </div>
+        </div>
+      </div>
+  
+      <div id="resultado">
+        <div class="result-card card-placeholder" id="cardBase">
+          <p class="placeholder-text">
+            Digite o CEP ao lado para ver a disponibilidade
+          </p>
+        </div>
+      </div>
+  
+    </div>
+  
+    <!-- MODAL -->
+    <div id="modalCeps" class="modal-overlay">
+        <div class="modal-box">
+          <button id="fecharModal" class="modal-close">×</button>
+          <h3>CEPs com cobertura ativa</h3>
+          <div class="modal-list" id="listaCeps"></div>
+        </div>
+      </div>
+  
+  </section>
+  
+  <style>
+    /* ELEMENTO HTML */
+    #e_3444390_1_177222447019615932 .e_html { border-radius: 20px; overflow: hidden; }
+
+    /* SEÇÃO */
+    #secao-cep-netwave { width:100%; height:100%; padding:0; border-radius:20px; }
+
+    /* LAYOUT */
+    .layout-grid { display:flex; gap:30px; align-items:center; background:linear-gradient(135deg,rgba(139,66,240,1) 0%,rgba(243,113,32,1) 100%); border:1px solid rgba(255,255,255,0.16); padding:50px; border-radius:28px; box-shadow:0 25px 70px rgba(0,0,0,0.12); }
+
+    /* PLACEHOLDER */
+    .card-placeholder { opacity:.6; display:flex; align-items:center; justify-content:center; min-height:260px; }
+    .placeholder-text { font-size:16px; color:#6b7280; }
+
+    /* COLUNA ESQUERDA */
+    .left-col { display:flex; flex-direction:column; align-items:flex-start; width:70%; }
+
+    /* TÍTULO */
+    .titulo-cep { font-family:'Unbounded',sans-serif; font-size:20px !important; margin-bottom:30px !important; line-height:1.5; text-align:left; color:rgba(255,255,255,0.95); text-shadow:0 6px 18px rgba(0,0,0,0.22); }
+
+    /* DESTAQUE PRINCIPAL */
+    .titulo-cep .destaque { background:linear-gradient(90deg,#ffffff,#ffe6d5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:800; }
+
+    /* DESTAQUE SOFT */
+    .titulo-cep .destaque-soft { color:rgba(255,255,255,0.92); font-weight:800; text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:2px; text-decoration-color:rgba(255,255,255,0.35); }
+
+    /* WRAPPER CEP */
+    .cep-wrapper { width:100%; max-width:520px; }
+
+    /* INPUT BOX */
+    .cep-input-box { display:flex; width:100%; border-radius:60px; border:1px solid rgba(255,255,255,0.22); overflow:hidden; transition:.3s; background:rgba(255,255,255,0.92); box-shadow:0 18px 45px rgba(0,0,0,0.12); }
+    .cep-input-box:focus-within { border-color:rgba(255,255,255,0.55); box-shadow:0 0 0 4px rgba(255,255,255,0.18),0 18px 45px rgba(0,0,0,0.14); }
+
+    /* INPUT */
+    #cepInput { flex:1; padding:18px 24px; font-family:'Questrial',sans-serif; font-size:17px; border:none; outline:none; background:transparent; color:#111827; }
+    #cepInput::placeholder { color:#9ca3af; }
+
+    /* BOTÃO PRINCIPAL */
+    #btnVerificar { padding:18px 32px; font-family:'Questrial',sans-serif; font-size:15px; font-weight:800; border:none; cursor:pointer; transition:.3s; background:linear-gradient(90deg,#8B42F0,#F37120); color:#fff; }
+    #btnVerificar:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,0.18); }
+    #btnVerificar:disabled { background:#e5e7eb; color:#9ca3af; cursor:not-allowed; }
+
+    /* RESULTADO */
+    #resultado { min-height:260px; display:flex; align-items:center; justify-content:center; }
+
+    /* CARD BASE */
+    .result-card { width:380px; min-height: 350px; padding:40px; border-radius:22px; text-align:center; font-family:'Questrial',sans-serif; background:#fff; border:1px solid rgba(17,24,39,0.08); box-shadow:0 30px 80px rgba(0,0,0,0.14); }
+    .result-icon { width:60px; height:60px; margin:0 auto 20px auto; }
+    .result-card h3 { font-family:'Unbounded',sans-serif; font-size:22px; margin-bottom:15px; color:#111827; }
+    .result-card p { font-size:16px; margin-bottom:25px; color:#4b5563; }
+
+    /* CARD SUCESSO */
+    .card-success { border: 2px solid rgb(34 197 94); box-shadow: 0px 0px 10px rgb(0 255 8 / 71%); }
+    .card-success h3 { color:#16a34a; }
+    .card-success svg { stroke:#16a34a; }
+    .card-success button { padding:14px 30px; border-radius:40px; border:none; font-size:15px; font-weight:800; background:linear-gradient(90deg,#8B42F0,#F37120); color:#fff; cursor:pointer; transition:.3s; }
+    .card-success button:hover { transform:translateY(-2px); box-shadow:0 12px 25px rgba(0,0,0,0.14); }
+
+    /* CARD ERRO */
+    .card-error { border:1px solid rgba(243,113,32,0.45); }
+    .card-error h3 { color:#F37120; }
+    .card-error svg { stroke:#F37120; }
+
+    /* BOTÃO LISTA */
+    .btn-lista { padding:12px 26px; border-radius:40px; border:2px solid #F37120; background:transparent; font-size:14px; font-weight:800; color:#F37120; cursor:pointer; transition:.3s; }
+    .btn-lista:hover { background:#F37120; color:#fff; box-shadow:0 10px 25px rgba(243,113,32,0.20); transform:translateY(-1px); }
+
+    /* MODAL */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:.3s; z-index:9999; }
+    .modal-overlay.active { opacity:1; pointer-events:auto; }
+    .modal-box { position:relative; background:#fff; width:90%; max-width:650px; border-radius:20px; padding:40px; text-align:left; font-family:'Questrial',sans-serif; max-height:420px; display:flex; flex-direction:column; box-shadow:0 30px 90px rgba(0,0,0,0.18); border:1px solid #f1f1f1; }
+    .modal-box h3 { font-family:'Unbounded',sans-serif; font-size:20px; margin-bottom:20px; color:#6d28d9; }
+    .modal-list { overflow:auto; font-size:14px; line-height:1.6; color:#4b5563; border-top:1px solid #eee; padding-top:20px; }
+    
+    /* BOTÃO FECHAR MODAL */
+    .modal-close { position:absolute; top:15px; right:18px; background:transparent; border:none; font-size:24px; font-weight:700; cursor:pointer; color:#6b7280; transition:.2s; }
+    .modal-close:hover { color:#111827; }
+
+    /* RESPONSIVO */
+    @media(max-width:600px) {
+        #secao-cep-netwave { padding:0; }
+        .layout-grid { flex-direction:column; padding:30px 20px; border-radius:22px; }
+        .left-col { width:100%; }
+        .titulo-cep { font-size:16px !important; }
+        .cep-input-box { flex-direction:column; border-radius:18px; }
+        #btnVerificar { width:100%; }
+        .result-card { padding:20px !important; width: 100% !important; }
+    }
+  </style>
+                     
+   <script>
+  (function(){
+  
+    function onlyDigits(str){
+      var out="";
+      for(var i=0;i<str.length;i++){
+        var c=str.charCodeAt(i);
+        if(c>=48 && c<=57) out+=str[i];
+      }
+      return out;
+    }
+  
+    function formatCEP(d){
+      if(d.length>5) return d.substring(0,5)+"-"+d.substring(5,8);
+      return d;
+    }
+  
+    // LISTA COMPLETA (Itanhaém + Mongaguá)
+    var ceps = {
+      "11740004":1,"11740010":1,"11740018":1,"11740024":1,"11740026":1,"11740038":1,"11740040":1,"11740044":1,"11740058":1,"11740066":1,"11740074":1,"11740076":1,"11740080":1,"11740114":1,"11740122":1,"11740126":1,"11740128":1,"11740130":1,"11740150":1,"11740152":1,"11740154":1,"11740156":1,"11740158":1,"11740160":1,"11740166":1,"11740170":1,"11740174":1,"11740176":1,"11740204":1,"11740206":1,"11740210":1,"11740218":1,"11740220":1,"11740222":1,"11740224":1,"11740246":1,"11740266":1,"11740292":1,"11740298":1,"11740302":1,"11740304":1,"11740308":1,"11740310":1,"11740320":1,"11740334":1,"11740338":1,"11740340":1,"11740346":1,"11740358":1,"11740360":1,"11740362":1,"11740374":1,"11740378":1,"11740400":1,"11740404":1,"11740418":1,"11740420":1,"11740430":1,"11740432":1,"11740436":1,"11740444":1,"11740448":1,"11740450":1,"11740472":1,"11740500":1,"11740508":1,"11740524":1,"11740526":1,"11740534":1,"11740568":1,"11740580":1,"11740582":1,"11740584":1,"11740612":1,"11740616":1,"11740654":1,"11740656":1,"11740660":1,"11740666":1,"11740670":1,"11740674":1,"11740678":1,"11740698":1,"11740704":1,"11740706":1,"11740708":1,"11740714":1,"11740716":1,"11740722":1,"11740724":1,"11740726":1,"11740730":1,"11740732":1,"11740742":1,"11740750":1,"11740752":1,"11740776":1,"11740778":1,"11740780":1,"11740782":1,"11740798":1,"11740812":1,"11740814":1,"11740822":1,"11740850":1,"11740864":1,"11740868":1,"11740896":1,"11741008":1,"11741056":1,"11741078":1,"11741080":1,"11741094":1,"11741140":1,"11741144":1,"11741204":1,"11741210":1,"11741308":1,"11741322":1,"11741364":1,"11741402":1,"11741404":1,"11741416":1,"11741494":1,"11741574":1,"11741580":1,"11741584":1,"11741586":1,"11741594":1,"11741598":1,"11741676":1,"11741696":1,"11741706":1,"11741728":1,"11741756":1,"11741784":1,"11742028":1,"11742392":1,"11742398":1,"11742400":1,"11742404":1,"11742406":1,"11742418":1,"11742420":1,"11742428":1,"11742430":1,"11742438":1,"11742442":1,"11742454":1,"11742468":1,"11742504":1,"11742510":1,"11742528":1,"11742532":1,"11742534":1,"11742542":1,"11742544":1,"11742560":1,"11742562":1,"11742566":1,"11742572":1,"11742584":1,"11742612":1,"11742614":1,"11742618":1,"11742620":1,"11742626":1,"11742628":1,"11742630":1,"11742652":1,"11742666":1,"11742670":1,"11742712":1,"11742730":1,"11742732":1,"11742734":1,"11742736":1,"11742738":1,"11742746":1,"11742754":1,"11742756":1,"11742762":1,"11742782":1,"11742788":1,"11742804":1,"11742806":1,"11742812":1,"11742814":1,"11743202":1,"11743224":1,"11743228":1,"11743240":1,"11743244":1,"11743246":1,"11743266":1,"11743268":1,"11743278":1,"11743280":1,"11743282":1,"11743286":1,"11743292":1,"11743294":1,"11743298":1,"11743302":1,"11743304":1,"11743306":1,"11743308":1,"11743384":1,"11743386":1,"11743388":1,"11743392":1,"11743410":1,"11743412":1,"11743414":1,"11743416":1,"11743418":1,"11743430":1,"11743462":1,"11743502":1,"11743506":1,"11743508":1,"11743518":1,"11743522":1,"11743526":1,"11743536":1,"11743550":1,"11743552":1,"11743554":1,"11743560":1,"11743564":1,"11743576":1,"11743594":1,"11743596":1,"11743598":1,"11743616":1,"11743640":1,"11744740":1,"11746006":1,"11746008":1,"11746010":1,"11746022":1,"11746040":1,"11746048":1,"11746050":1,"11746052":1,"11746054":1,"11746056":1,"11746058":1,"11746064":1,"11746066":1,"11746070":1,"11746078":1,"11746088":1,"11746090":1,"11746124":1,"11746128":1,"11746130":1,"11746166":1,"11746190":1,"11746192":1,"11746202":1,"11746204":1,"11746240":1,"11746276":1,"11746278":1,"11746284":1,"11746322":1,"11746330":1,"11746364":1,"11746366":1,"11746372":1,"11746376":1,"11746386":1,"11746390":1,"11746392":1,"11746396":1,"11746398":1,"11746406":1,"11746408":1,"11746434":1,"11746456":1,"11746510":1,"11746512":1,"11746514":1,"11746518":1,"11746520":1,"11746522":1,"11746524":1,"11746536":1,"11746538":1,"11746542":1,"11746544":1,"11746550":1,"11746552":1,"11746556":1,"11746558":1,"11746562":1,"11746564":1,"11746574":1,"11746576":1,"11746578":1,"11746580":1,"11746582":1,"11746588":1,"11746590":1,"11746592":1,"11746594":1,"11746598":1,"11746604":1,"11746608":1,"11746610":1,"11746612":1,"11746616":1,"11746640":1,"11746652":1,"11746654":1,"11746658":1,"11746664":1,"11746666":1,"11746672":1,"11746686":1,"11746690":1,"11746692":1,"11746702":1,"11746704":1,"11746710":1,"11746712":1,"11746716":1,"11746718":1,"11746720":1,"11746722":1,"11746724":1,"11746726":1,"11746732":1,"11746736":1,"11746740":1,"11746742":1,"11746744":1,"11746750":1,"11746756":1,"11746766":1,"11746768":1,"11746770":1,"11746774":1,"11746776":1,"11746778":1,"11746802":1,"11746806":1,"11746808":1,"11746822":1,"11746826":1,"11746828":1,"11746830":1,"11746832":1,"11746836":1,"11746840":1,"11746846":1,"11746854":1,"11747006":1,"11747016":1,"11747020":1,"11747022":1,"11747024":1,"11747038":1,"11747046":1,"11747050":1,"11747054":1,"11747060":1,"11747072":1,"11747082":1,"11747092":1,"11747096":1,"11747098":1,"11747106":1,"11747114":1,"11747122":1,"11747128":1,"11747138":1,"11747140":1,"11747144":1,"11747146":1,"11747148":1,"11747150":1,"11747162":1,"11747168":1,"11747170":1,"11747188":1,"11747190":1,"11747192":1,"11747198":1,"11747200":1,"11747224":1,"11747228":1,"11747234":1,"11747240":1,"11747242":1,"11747246":1,"11747254":1,"11747272":1,"11747294":1,"11747298":1,"11747304":1,"11747326":1,"11747334":1,"11747336":1,"11747338":1,"11747350":1,"11747362":1,"11747364":1,"11747366":1,"11747808":1,"11747824":1,"11747846":1,"11747848":1,"11747850":1,"11747854":1,"11747856":1,"11747858":1,"11747882":1,"11748048":1,"11748064":1,"11748082":1,"11748084":1,"11748088":1,"11748092":1,"11748272":1,"11748292":1,"11748298":1,"11749008":1,"11749012":1,"11749040":1,"11749044":1,"11749046":1,"11749144":1,"11749210":1,"11749224":1,"11749258":1,"11749300":1,"11749318":1,"11749320":1,"11749446":1,"11749450":1,"11749470":1,"11749478":1,"11749488":1,"11749502":1,"11749520":1,"11749566":1,"11749588":1,"11750124":1,"11750462":1,"11750496":1,"11751320":1,"11751326":1,"11751328":1,"11752138":1,"11752144":1,"11752152":1,"11754112":1,"11754212":1,"11754562":1,"11754572":1,"11754614":1,"11754780":1,"11754804":1,"11754812":1,"11754846":1,"11754854":1,"11754856":1,"11754858":1,"11755018":1,"11755028":1,"11755048":1,"11755052":1,"11755406":1,"11755520":1,"11756674":1,"11756698":1,"11756702":1,"11756712":1,"11756714":1,"11757130":1,"11757198":1,"11737016":1,"11737042":1,"11730162":1,"11737464":1,"11730058":1,"11737036":1,"11730048":1,"11733410":1,"11730120":1,"11737042":1,"11730476":1,"11737464":1,"11737402":1,"11737402":1,"11730058":1,"11730162":1,"11730048":1,"11731010":1,"11730120":1,"11730075":1,"11731264":1,"11730400":1,"11730084":1,"11730376":1,"11730078":1,"11730404":1,"11730008":1,"11730382":1,"11735574":1,"11737038":1,"11730028":1,"11730386":1,"11737028":1,"11730388":1,"11730116":1,"11730379":1,"11730026":1,"11735330":1,"11730406":1,"11731010":1,"11735374":1,"11735570":1,"11730016":1,"11730016":1
+    };
+  
+    function init(){
+  
+    var input = document.getElementById("cepInput");
+    var btn = document.getElementById("btnVerificar");
+    var resultado = document.getElementById("resultado");
+    var modal = document.getElementById("modalCeps");
+    var lista = document.getElementById("listaCeps");
+  
+    if(!input || !btn || !resultado) return;
+  
+    // ===== INPUT MASK =====
+    input.oninput = function(){
+  
+      var d = onlyDigits(input.value);
+      if(d.length > 8) d = d.substring(0,8);
+  
+      input.value = formatCEP(d);
+      btn.disabled = d.length !== 8;
+  
+    };
+  
+    // ===== BOTÃO PRINCIPAL =====
+    btn.onclick = function(){
+  
+      var cep = onlyDigits(input.value);
+      if(cep.length !== 8) return;
+  
+      // SUCESSO
+      if(ceps[cep]){
+  
+        var card = document.getElementById("cardBase");
+        card.className = "result-card card-success";
+        card.innerHTML =
+        '<div class="result-icon">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke-width="2">'+
+        '<path d="M5 12.55a11 11 0 0 1 14.08 0"/>'+
+        '<path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>'+
+        '<path d="M12 20h.01"/>'+
+        '</svg>'+
+        '</div>'+
+        '<h3>Internet disponível no CEP '+formatCEP(cep)+'</h3>'+
+        '<p>Ótima notícia! Temos cobertura de fibra óptica de alta velocidade na sua região.</p>'+
+        '<button id="btnContato">Falar com Atendimento</button>';
+  
+      } 
+      // ERRO
+      else {
+  
+        var card = document.getElementById("cardBase");
+        card.className = "result-card card-error";
+        card.innerHTML =
+        '<div class="result-icon">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke-width="2">'+
+        '<circle cx="12" cy="12" r="10"/>'+
+        '<line x1="15" y1="9" x2="9" y2="15"/>'+
+        '<line x1="9" y1="9" x2="15" y2="15"/>'+
+        '</svg>'+
+        '</div>'+
+        '<h3>Sem cobertura no momento</h3>'+
+        '<p>O CEP '+formatCEP(cep)+' ainda está fora da nossa área.</p>'+
+        '<button class="btn-lista" id="abrirLista">Ver CEPs atendidos</button>';
+      }
+  
+    };
+  
+    // ===== DELEGAÇÃO DE EVENTOS (MODAL + WHATSAPP) =====
+    document.onclick = function(e){
+  
+      // WhatsApp
+      if(e.target && e.target.id === "btnContato"){
+        var cep = onlyDigits(input.value);
+        window.open(
+    "https://wa.me/5513978114161?text=Olá, quero contratar para o CEP "+cep,
+    "_blank"
+  );
+      }
+  
+      // Abrir lista
+      if(e.target && e.target.id === "abrirLista"){
+        if(lista && modal){
+          lista.innerHTML = Object.keys(ceps).join("<br>");
+          modal.classList.add("active");
+        }
+      }
+        // Fechar pelo botão X
+        if(e.target && e.target.id === "fecharModal"){
+        modal.classList.remove("active");
+        }
+      // Fechar modal clicando fora
+      if(e.target === modal){
+        modal.classList.remove("active");
+      }
+  
+    };
+  
+  }
+  
+  document.addEventListener("DOMContentLoaded", init);
+  
+  })();
+  </script>
+  
