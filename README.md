@@ -13,6 +13,7 @@ Biblioteca de códigos reutilizáveis para projetos desenvolvidos em V4 Pages.
 /tables  
 /carousel  
 /ui  
+/widgets
 
 ---
 
