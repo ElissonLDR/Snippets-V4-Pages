@@ -1,0 +1,184 @@
+<div style="max-width:420px;margin:auto;text-align:center;color:#F5E6D3;font-family:sans-serif;">
+
+<!-- VIDEO -->
+<div style="display:flex;justify-content:center;margin-bottom:20px;">
+<div style="border-radius:18px;overflow:hidden;">
+<iframe 
+src="https://player.vimeo.com/video/1173418695?h=ca60471998&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1"
+width="338"
+height="600"
+frameborder="0"
+allow="autoplay; fullscreen; picture-in-picture"
+title="VSL - Combo cookies">
+</iframe>
+</div>
+</div>
+
+<p id="tituloForm" style="font-size:18px;margin-bottom:16px;">
+Informe seus dados para liberar a surpresa 👇
+</p>
+
+<!-- FORM -->
+<div id="formLead">
+
+<input id="nomeLead" placeholder="Seu nome"
+style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:10px;font-size:16px;">
+
+<input id="whatsLead" placeholder="Seu WhatsApp"
+style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:12px;font-size:16px;">
+
+<button id="btnEnviar"
+style="width:100%;padding:16px;border-radius:12px;border:none;background:#1f5c3f;color:#fff;font-weight:600;font-size:17px;cursor:pointer;">
+Liberar surpresa
+</button>
+
+</div>
+
+<!-- TIMER -->
+<div id="areaTimer" style="display:none;margin-top:20px;">
+<p style="font-size:18px;margin-bottom:10px;">
+⏳ Sua surpresa será liberada em instantes
+</p>
+
+<p id="timer" style="font-size:20px;font-weight:600;"></p>
+</div>
+
+</div>
+
+<style>
+input::placeholder{
+color:#d9c3b0;
+opacity:1;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+
+var btn=document.getElementById("btnEnviar");
+var nome=document.getElementById("nomeLead");
+var whats=document.getElementById("whatsLead");
+
+var form=document.getElementById("formLead");
+var titulo=document.getElementById("tituloForm");
+
+var areaTimer=document.getElementById("areaTimer");
+var timerEl=document.getElementById("timer");
+
+var liberarEm=580;
+
+/* =========================
+   HELPERS
+========================= */
+
+function onlyDigits(str){
+let out="";
+for(let i=0;i<str.length && out.length<11;i++){
+const c=str.charCodeAt(i);
+if(c>=48 && c<=57) out+=str[i];
+}
+return out;
+}
+
+/* =========================
+   TELEFONE / WHATSAPP
+========================= */
+
+function formatPhoneBR(d){
+if(!d) return "";
+if(d.length<=2) return "("+d;
+if(d.length<=6) return "("+d.slice(0,2)+") "+d.slice(2);
+if(d.length<=10) return "("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6);
+return "("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7,11);
+}
+
+function validarTelefoneBR(valor){
+const digits = onlyDigits(valor);
+return digits.length === 10 || digits.length === 11;
+}
+
+/* máscara dinâmica */
+
+whats.addEventListener("input",function(){
+const digits=onlyDigits(this.value);
+this.value=formatPhoneBR(digits);
+});
+
+/* =========================
+   TIMER
+========================= */
+
+function iniciarTimer(){
+
+titulo.style.display="none";
+form.style.display="none";
+areaTimer.style.display="block";
+
+var inicio=Date.now();
+
+function atualizar(){
+
+var agora=Date.now();
+var s=Math.floor((agora-inicio)/1000);
+var restante=liberarEm-s;
+
+if(restante<=0){
+
+areaTimer.innerHTML=
+'<a href="https://lp.comunidademaskavo.com.br/combo-cookies" style="display:block;padding:18px;background:#1f5c3f;color:#fff;border-radius:12px;text-decoration:none;font-size:18px;font-weight:600;">Garantir o Combo Cookies</a>';
+
+return;
+}
+
+var m=Math.floor(restante/60);
+var sec=restante%60;
+
+if(sec<10) sec="0"+sec;
+
+timerEl.innerHTML="🔓 Liberando em "+m+":"+sec;
+
+setTimeout(atualizar,1000);
+
+}
+
+atualizar();
+}
+
+/* =========================
+   SUBMIT
+========================= */
+
+btn.onclick=function(){
+
+var n=nome.value.trim();
+var w=whats.value;
+
+if(n.length<2){
+alert("Digite seu nome");
+return;
+}
+
+if(!validarTelefoneBR(w)){
+alert("Digite um WhatsApp válido");
+return;
+}
+
+iniciarTimer();
+
+/* envio para MAKE */
+
+try{
+fetch("SEU_WEBHOOK_MAKE",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+nome:n,
+whatsapp:onlyDigits(w)
+})
+});
+}catch(e){}
+
+};
+
+});
+</script>
