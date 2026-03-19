@@ -1,184 +1,168 @@
 <div style="max-width:420px;margin:auto;text-align:center;color:#F5E6D3;font-family:sans-serif;">
 
-<!-- VIDEO -->
-<div style="display:flex;justify-content:center;margin-bottom:20px;">
-<div style="border-radius:18px;overflow:hidden;">
-<iframe 
-src="https://player.vimeo.com/video/1173418695?h=ca60471998&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1"
-width="338"
-height="600"
-frameborder="0"
-allow="autoplay; fullscreen; picture-in-picture"
-title="VSL - Combo cookies">
-</iframe>
-</div>
-</div>
+   <!-- VIDEO CONTAINER -->
+   <div
+      style="position:relative;width:338px;height:600px;margin:auto;border-radius:18px;overflow:hidden;background:#2b1a12;">
 
-<p id="tituloForm" style="font-size:18px;margin-bottom:16px;">
-Informe seus dados para liberar a surpresa 👇
-</p>
+      <!-- VIDEO -->
+      <iframe
+         src="https://player.vimeo.com/video/1173418695?h=ca60471998&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1"
+         width="338" height="600" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
+         title="VSL - Combo cookies">
+      </iframe>
 
-<!-- FORM -->
-<div id="formLead">
+      <!-- OVERLAY FORM -->
+      <div id="overlay"
+         style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:#2b1a12;">
 
-<input id="nomeLead" placeholder="Seu nome"
-style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:10px;font-size:16px;">
+         <div style="width:100%;">
 
-<input id="whatsLead" placeholder="Seu WhatsApp"
-style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:12px;font-size:16px;">
+            <p style="font-size:18px;margin-bottom:16px;">
+               🔓 Preencha para desbloquear o vídeo
+            </p>
 
-<button id="btnEnviar"
-style="width:100%;padding:16px;border-radius:12px;border:none;background:#1f5c3f;color:#fff;font-weight:600;font-size:17px;cursor:pointer;">
-Liberar surpresa
-</button>
+            <input id="nomeLead" placeholder="Seu nome"
+               style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:10px;font-size:16px;">
 
-</div>
+            <input id="whatsLead" placeholder="Seu WhatsApp"
+               style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:12px;font-size:16px;">
 
-<!-- TIMER -->
-<div id="areaTimer" style="display:none;margin-top:20px;">
-<p style="font-size:18px;margin-bottom:10px;">
-⏳ Sua surpresa será liberada em instantes
-</p>
+            <button id="btnEnviar"
+               style="width:100%;padding:16px;border-radius:12px;border:none;background:#CE04C0;color:#fff;font-weight:600;font-size:17px;cursor:pointer;">
+               Desbloquear vídeo
+            </button>
 
-<p id="timer" style="font-size:20px;font-weight:600;"></p>
-</div>
+         </div>
+      </div>
+
+   </div>
+
+   <!-- TIMER -->
+   <div id="areaTimer" style="margin-top:20px;">
+      <p style="font-size:18px;margin-bottom:10px;">
+         ⏳ Oferta liberando em
+      </p>
+      <p id="timer" style="font-size:22px;font-weight:600;"></p>
+   </div>
 
 </div>
 
 <style>
-input::placeholder{
-color:#d9c3b0;
-opacity:1;
-}
+   input::placeholder {
+      color: #d9c3b0;
+   }
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded",function(){
+   document.addEventListener("DOMContentLoaded", function () {
 
-var btn=document.getElementById("btnEnviar");
-var nome=document.getElementById("nomeLead");
-var whats=document.getElementById("whatsLead");
+      var btn = document.getElementById("btnEnviar");
+      var nome = document.getElementById("nomeLead");
+      var whats = document.getElementById("whatsLead");
 
-var form=document.getElementById("formLead");
-var titulo=document.getElementById("tituloForm");
+      var overlay = document.getElementById("overlay");
+      var timer = document.getElementById("timer");
 
-var areaTimer=document.getElementById("areaTimer");
-var timerEl=document.getElementById("timer");
+      var liberarEm = 585; //9:45
 
-var liberarEm=580;
+      function onlyDigits(str) {
+         let out = "";
+         for (let i = 0; i < str.length && out.length < 11; i++) {
+            let c = str.charCodeAt(i);
+            if (c >= 48 && c <= 57) out += str[i];
+         }
+         return out;
+      }
 
-/* =========================
-   HELPERS
-========================= */
+      function formatPhoneBR(d) {
+         if (!d) return "";
+         if (d.length <= 2) return "(" + d;
+         if (d.length <= 6) return "(" + d.slice(0, 2) + ") " + d.slice(2);
+         if (d.length <= 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+         return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7, 11);
+      }
 
-function onlyDigits(str){
-let out="";
-for(let i=0;i<str.length && out.length<11;i++){
-const c=str.charCodeAt(i);
-if(c>=48 && c<=57) out+=str[i];
-}
-return out;
-}
+      function validarTelefoneBR(valor) {
+         const digits = onlyDigits(valor);
+         return digits.length === 10 || digits.length === 11;
+      }
 
-/* =========================
-   TELEFONE / WHATSAPP
-========================= */
+      whats.addEventListener("input", function () {
+         const digits = onlyDigits(this.value);
+         this.value = formatPhoneBR(digits);
+      });
 
-function formatPhoneBR(d){
-if(!d) return "";
-if(d.length<=2) return "("+d;
-if(d.length<=6) return "("+d.slice(0,2)+") "+d.slice(2);
-if(d.length<=10) return "("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6);
-return "("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7,11);
-}
+      function iniciarTimer() {
 
-function validarTelefoneBR(valor){
-const digits = onlyDigits(valor);
-return digits.length === 10 || digits.length === 11;
-}
+         var inicio = Date.now();
 
-/* máscara dinâmica */
+         function atualizar() {
 
-whats.addEventListener("input",function(){
-const digits=onlyDigits(this.value);
-this.value=formatPhoneBR(digits);
-});
+            var agora = Date.now();
+            var s = Math.floor((agora - inicio) / 1000);
+            var restante = liberarEm - s;
 
-/* =========================
-   TIMER
-========================= */
+            if (restante <= 0) {
 
-function iniciarTimer(){
+               timer.innerHTML =
+                  '<a href="https://lp.comunidademaskavo.com.br/combo-cookies" target="_blank" style="display:block;padding:18px;background:#1f5c3f;color:#fff;border-radius:12px;text-decoration:none;font-size:18px;font-weight:600;">Garantir o Combo Cookies</a>';
 
-titulo.style.display="none";
-form.style.display="none";
-areaTimer.style.display="block";
+               return;
+            }
 
-var inicio=Date.now();
+            var m = Math.floor(restante / 60);
+            var sec = restante % 60;
+            if (sec < 10) sec = "0" + sec;
 
-function atualizar(){
+            timer.innerHTML = m + ":" + sec;
 
-var agora=Date.now();
-var s=Math.floor((agora-inicio)/1000);
-var restante=liberarEm-s;
+            setTimeout(atualizar, 1000);
 
-if(restante<=0){
+         }
 
-areaTimer.innerHTML=
-'<a href="https://lp.comunidademaskavo.com.br/combo-cookies" style="display:block;padding:18px;background:#1f5c3f;color:#fff;border-radius:12px;text-decoration:none;font-size:18px;font-weight:600;">Garantir o Combo Cookies</a>';
+         atualizar();
+      }
 
-return;
-}
+      btn.onclick = function () {
 
-var m=Math.floor(restante/60);
-var sec=restante%60;
+         var n = nome.value.trim();
+         var w = whats.value;
 
-if(sec<10) sec="0"+sec;
+         if (n.length < 2) {
+            alert("Digite seu nome");
+            return;
+         }
 
-timerEl.innerHTML="🔓 Liberando em "+m+":"+sec;
+         if (!validarTelefoneBR(w)) {
+            alert("Digite um WhatsApp válido");
+            return;
+         }
 
-setTimeout(atualizar,1000);
+         /* remove overlay */
 
-}
+         overlay.style.display = "none";
 
-atualizar();
-}
+         /* inicia timer */
 
-/* =========================
-   SUBMIT
-========================= */
+         iniciarTimer();
 
-btn.onclick=function(){
+         /* webhook make */
 
-var n=nome.value.trim();
-var w=whats.value;
+         try {
+            fetch("https://hook.us1.make.celonis.com/ytkkn4bwgd2sdf7k12ekmleg8c98sd4n", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify({
+                  nome: n,
+                  whatsapp: onlyDigits(w),
+                  pagina: window.location.href,
+                  utm: window.location.search,
+                  data: new Date().toISOString()
+               })
+            });
+         } catch (e) { }
 
-if(n.length<2){
-alert("Digite seu nome");
-return;
-}
+      };
 
-if(!validarTelefoneBR(w)){
-alert("Digite um WhatsApp válido");
-return;
-}
-
-iniciarTimer();
-
-/* envio para MAKE */
-
-try{
-fetch("SEU_WEBHOOK_MAKE",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-nome:n,
-whatsapp:onlyDigits(w)
-})
-});
-}catch(e){}
-
-};
-
-});
+   });
 </script>
