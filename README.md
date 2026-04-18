@@ -1,26 +1,50 @@
 # Snippets V4 Pages
 
-Biblioteca de códigos reutilizáveis para projetos desenvolvidos em V4 Pages.
+Biblioteca de codigos reutilizaveis para projetos desenvolvidos em V4 Pages.
 
----
+## Estrutura
 
-## 📂 Estrutura
+```text
+/
+|-- buttons/
+|   |-- floating/
+|   `-- styles/
+|-- calculators/
+|-- carousel/
+|-- forms/
+|   |-- projects/
+|   |-- redirects/
+|   |-- templates/
+|   `-- validation/
+|-- tables/
+|-- ui/
+|-- whatsapp/
+|   |-- buttons/
+|   |-- forms/
+|   |-- redirects/
+|   `-- widgets/
+`-- widgets/
+```
 
-/calculators  
-/whatsapp  
-/buttons  
-/forms  
-/tables  
-/carousel  
-/ui  
-/widgets
+## Convencao
 
----
+- `buttons/`: botoes reutilizaveis e variacoes visuais.
+- `calculators/`: calculadoras e logicas de simulacao.
+- `carousel/`: carrosseis e sliders.
+- `forms/projects/`: formularios especificos de clientes ou projetos.
+- `forms/redirects/`: scripts de redirecionamento ligados a formularios.
+- `forms/templates/`: modelos de formularios prontos para adaptacao.
+- `forms/validation/`: mascaras e validacoes reutilizaveis.
+- `tables/`: tabelas e blocos comparativos.
+- `ui/`: elementos visuais isolados de interface.
+- `whatsapp/buttons/`: botoes de acionamento para WhatsApp.
+- `whatsapp/forms/`: formularios com envio ou abertura de conversa no WhatsApp.
+- `whatsapp/redirects/`: redirecionamentos relacionados ao fluxo de WhatsApp.
+- `whatsapp/widgets/`: widgets flutuantes ou embeds de WhatsApp.
+- `widgets/`: componentes de negocio e widgets diversos.
 
-## 📌 Sobre
+## Objetivo
 
-Repositório com snippets organizados por categoria para facilitar manutenção, reutilização e padronização de implementações.
-
----
+Organizar os snippets por responsabilidade para facilitar manutencao, reutilizacao e padronizacao das implementacoes.
 
 Desenvolvido por Elisson Lemos Dias Rodrigues

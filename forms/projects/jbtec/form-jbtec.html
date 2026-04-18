@@ -1,0 +1,314 @@
+<style>
+    .msg-ajuda{ margin-top: 15px; justify-content: center; display: flex; font-size: 15px; color: rgb(45 47 65); }
+    .msg-ajuda .texto{ margin-right: 5px; }
+    .form-container{padding:10px; border-radius:8px; width:100%; font-family:Arial,sans-serif;}
+    label{display:block; margin-bottom:5px; font-size:14px; color:#5a5a5a;}
+    input{width:100%; padding:12px; border:1px solid #c2c9d6 !important; border-radius:10px; margin-bottom:20px; font-size:14px; outline:none; transition:border 0.3s ease;}
+    input:focus{border-color:#4a67d6;}
+    .info{font-size:12px; color:#5a5a5a; margin-bottom:10px; display:block;}
+    button{padding:15px 20px; background-color:#2f3293; border:none; border-radius:10px; color:#fff; font-size:16px; font-weight:bold; cursor:pointer; transition:background 0.3s ease; white-space:nowrap;}
+    button:hover{background-color:#232678;}
+  
+    /* container do botão + output */
+    .form-actions{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      margin-top:10px;
+    }
+  
+    /* mensagem de saída */
+    #output{
+      font-size:14px; padding:10px; border-radius:6px; flex:1;
+    }
+    .form-error{background:#ffe5e5; color:#a33; display:block;}
+    .form-success{background:#e5ffe5; color:#2a2; display:block;}
+    .form-info{background:#f0f0ff; color:#333; display:block; display:flex; align-items:center; gap:8px;}
+  
+    /* spinner */
+    .spinner{
+      border:3px solid #ccc;
+      border-top:3px solid #2f3293;
+      border-radius:50%;
+      width:16px;
+      height:16px;
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{
+      0%{transform:rotate(0deg);}
+      100%{transform:rotate(360deg);}
+    }
+  
+    /* no mobile, empilha */
+    @media(max-width:600px){
+      .form-actions{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      #output{width:100%;}
+      button{width:100%;}
+    }
+  </style>
+  
+  <div class="form-container">
+    <form id="leadForm" novalidate>
+      <div style="display:flex; gap:10px;">
+        <div style="flex:1;">
+          <label for="nome">* Nome</label>
+          <input type="text" id="nome" name="nome" required>
+        </div>
+        <div style="flex:1;">
+          <label for="sobrenome">* Sobrenome</label>
+          <input type="text" id="sobrenome" name="sobrenome" required>
+        </div>
+      </div>
+  
+      <label for="telefone">* Telefone</label>
+      <input type="tel" id="telefone" name="telefone" required maxlength="15">
+  
+      <label for="email">* E-mail</label>
+      <input type="email" id="email" name="email" required>
+  
+      <label for="identificador">* Identificador para acesso ao sistema:</label>
+      <span class="info">ex: https://[identificador].fusion.usign.io/<br>
+  (3 a 15 letras, sem espaços, acentos ou caracteres especiais)</span>
+      <input type="text" id="identificador" name="identificador" required minlength="3" maxlength="15">
+  
+      <!-- Campos ocultos UTM -->
+      <input type="hidden" id="utm_source" name="utm_source">
+      <input type="hidden" id="utm_medium" name="utm_medium">
+      <input type="hidden" id="utm_campaign" name="utm_campaign">
+      <input type="hidden" id="utm_term" name="utm_term">
+      <input type="hidden" id="utm_content" name="utm_content">
+  
+      <!-- Botão + mensagem -->
+      <div class="form-actions">
+        <button type="submit">Enviar</button>
+        <div id="output"></div>
+      </div>
+    </form>
+    
+  </div>
+
+  <!-- POPUP DE CONFIRMAÇÃO -->
+<div id="popup-sucesso" style="
+display:none;
+position:fixed;
+top:0; left:0; width:100%; height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+<div style="
+  background:#fff;
+  border-radius:12px;
+  padding:30px 25px;
+  text-align:center;
+  max-width:360px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.25);
+  font-family:Arial, sans-serif;
+  color:#333;
+">
+  <h3 style="color:#2f3293; margin-bottom:10px;">✅ Cadastro enviado!</h3>
+  <p style="font-size:15px; line-height:1.5;">
+    Um e-mail de <strong>ativação</strong> foi encaminhado para o endereço cadastrado.<br>
+    Verifique sua caixa de entrada (ou a pasta de spam) para continuar o acesso.
+  </p>
+  <button id="fechar-popup" style="
+    margin-top:20px;
+    background:#2f3293;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:10px 20px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:background 0.3s;
+  ">Fechar</button>
+</div>
+</div>
+
+<script>
+// Função para mostrar o popup de sucesso
+function mostrarPopupSucesso() {
+  const popup = document.getElementById('popup-sucesso');
+  if (popup) popup.style.display = 'flex';
+}
+
+// Evento para fechar o popup
+document.addEventListener('click', function(e){
+  if(e.target.id === 'fechar-popup' || e.target.id === 'popup-sucesso'){
+    document.getElementById('popup-sucesso').style.display = 'none';
+  }
+});
+</script>
+
+  
+  <script>
+  window.DispararGTM=function(){
+    window.dataLayer=window.dataLayer||[];
+    dataLayer.push({event:'gtm.formSubmit'});
+  };
+  
+  document.addEventListener("DOMContentLoaded",function(){
+    const form = document.getElementById("leadForm");
+    const output = document.getElementById("output");
+    const nomeField = document.getElementById("nome");
+    const sobrenomeField = document.getElementById("sobrenome");
+    const telField = document.getElementById("telefone");
+    const idField = document.getElementById("identificador");
+  
+    // --- UTMs
+    const params = new URLSearchParams(window.location.search);
+    ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"].forEach(f=>{
+      const val = params.get(f);
+      if(val){
+        const input = form.querySelector("#"+f);
+        if(input) input.value = val;
+      }
+    });
+  
+    // --- Helpers sem regex
+    function onlyDigits(str){
+      let out = "";
+      for(let i=0;i<str.length && out.length<11;i++){
+        const c = str.charCodeAt(i);
+        if(c>=48 && c<=57) out += str[i];
+      }
+      return out;
+    }
+    function formatPhoneBR(d){ // d = somente dígitos (0-11)
+      if(!d) return "";
+      if(d.length<=2) return "("+d;
+      if(d.length<=6) return "("+d.slice(0,2)+") "+d.slice(2);
+      if(d.length<=10) return "("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6);
+      return "("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7,11);
+    }
+  
+    // --- Máscara compatível com GreatPages
+    function applyMaskFromRaw(){
+      const d = onlyDigits(telField.value);
+      telField.value = formatPhoneBR(d);
+    }
+    telField.addEventListener("input", applyMaskFromRaw);
+    telField.addEventListener("paste", function(e){
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text") || "";
+      const d = onlyDigits(text);
+      telField.value = formatPhoneBR(d);
+    });
+  
+    // --- Identificador: só letras (3-15)
+    idField.addEventListener("input",function(){
+      // mantém apenas a-z, sem números
+      let v = this.value.toLowerCase();
+      let out = "";
+      for(let i=0;i<v.length && out.length<15;i++){
+        const c = v.charCodeAt(i);
+        if(c>=97 && c<=122) out += v[i]; // a-z
+      }
+      this.value = out;
+    });
+    function validarIdentificador(v){
+      return v.length>=3 && v.length<=15 && /^[a-z]+$/.test(v);
+    }
+  
+    // --- SUBMISSÃO
+    form.addEventListener("submit", async function(e){
+      e.preventDefault();
+  
+      const nome = (nomeField.value||"").trim();
+      const sobrenome = (sobrenomeField.value||"").trim();
+      const rawDigits = onlyDigits(telField.value);         // 10 ou 11 dígitos
+      const telefoneKommo = "55" + rawDigits;               // sempre 55 + dígitos (sem máscara)
+      const email = (document.getElementById("email").value||"").trim();
+      const identificador = (idField.value||"").trim();
+  
+      // UTMs
+      const utmSource = document.getElementById("utm_source").value;
+      const utmMedium = document.getElementById("utm_medium").value;
+      const utmCampaign = document.getElementById("utm_campaign").value;
+      const utmTerm = document.getElementById("utm_term").value;
+      const utmContent = document.getElementById("utm_content").value;
+  
+      try{
+        // Validações
+        if(!validarIdentificador(identificador)){
+          throw new Error("⚠️ Identificador inválido (use apenas letras, de 3 a 15).");
+        }
+        if(!email.includes("@")){
+          throw new Error("⚠️ E-mail inválido.");
+        }
+        if(rawDigits.length < 10){ // aceita fixo (10) e celular (11)
+          throw new Error("⚠️ Telefone inválido.");
+        }
+  
+        // Feedback de envio (+ evita clique duplo)
+        output.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:3px solid #ccc;border-top:3px solid #2f3293;border-radius:50%;vertical-align:-3px;margin-right:8px;animation:gpSpin 1s linear infinite"></span>⏳ Enviando, aguarde...';
+        output.className = "form-info";
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if(submitBtn){ submitBtn.disabled = true; submitBtn.style.opacity = "0.7"; }
+  
+        // Chamada principal
+        const res = await fetch("LINK_API_AQUI",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            nome: nome+" "+sobrenome,
+            email: email,
+            telefone: telefoneKommo,   // <- sem máscara, padrão Kommo
+            identificador: identificador,
+            plano:"publisher",
+            completo:true
+          })
+        });
+  
+        let data; try{ data = await res.json(); }catch{ data = {}; }
+  
+        if(!res.ok){
+          throw new Error(data.error || "⚠️ Não foi possível concluir. Talvez o e-mail ou identificador já existam. Tente novamente.");
+        }
+  
+        // Sucesso
+        output.innerHTML = "✅ Cadastro enviado com sucesso!";
+        output.className = "form-success";
+        mostrarPopupSucesso();
+  
+        // Webhook (mantido)
+        await fetch("LINK_WEBHOOK_AQUI",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            nome: nome+" "+sobrenome,
+            email,
+            telefone: telefoneKommo,
+            identificador,
+            utm_source: utmSource,
+            utm_medium: utmMedium,
+            utm_campaign: utmCampaign,
+            utm_term: utmTerm,
+            utm_content: utmContent
+          })
+        });
+  
+        if(typeof window.DispararGTM==="function"){ window.DispararGTM(); }
+  
+      }catch(err){
+        output.innerHTML = err.message || "⚠️ Não foi possível concluir. Talvez o e-mail ou identificador já existam. Tente novamente.";
+        output.className = "form-error";
+      }finally{
+        // reabilita botão
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if(submitBtn){ submitBtn.disabled = false; submitBtn.style.opacity = ""; }
+        nomeField.focus();
+      }
+    });
+  
+    // animação básica sem depender de CSS externo
+    const style = document.createElement("style");
+    style.textContent = "@keyframes gpSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}";
+    document.head.appendChild(style);
+  });
+  </script>
+  
