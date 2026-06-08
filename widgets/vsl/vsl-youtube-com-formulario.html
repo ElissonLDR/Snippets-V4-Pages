@@ -1,0 +1,228 @@
+<div id="vslRoot" data-vsl-embed="vsl" style="max-width:420px;margin:auto;text-align:center;color:#F5E6D3;font-family:sans-serif;">
+
+    <!-- VIDEO CONTAINER -->
+    <div id="videoBox"
+       style="position:relative;width:338px;height:600px;margin:auto;border-radius:18px;overflow:hidden;background:#2b1a12;">
+
+       <!-- VIDEO -->
+       <iframe id="vslPlayer"
+          src=""
+          width="338"
+          height="600"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+          title="TITULO_DO_VIDEO">
+       </iframe>
+
+       <!-- BLOQUEIO DE CLIQUES (só ativo após desbloquear o vídeo) -->
+       <div id="blockTop"
+          style="display:none;position:absolute;top:0;left:0;width:100%;height:40%;z-index:2;touch-action:none;"></div>
+       <div id="blockBottom"
+          style="display:none;position:absolute;bottom:0;left:0;width:100%;height:40%;z-index:2;touch-action:none;"></div>
+       <div id="blockLeft"
+          style="display:none;position:absolute;top:0;left:0;width:40%;height:100%;z-index:2;touch-action:none;"></div>
+       <div id="blockRight"
+          style="display:none;position:absolute;top:0;right:0;width:40%;height:100%;z-index:2;touch-action:none;"></div>
+
+       <!-- OFERTA LIBERADA -->
+       <div id="ofertaLiberada"
+          style="display:none;position:absolute;bottom:0;left:0;width:100%;z-index:4;pointer-events:none;text-align:center;padding:14px 10px 10px;background:linear-gradient(transparent,rgba(27,16,10,0.98));">
+          <p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#F5E6D3;">Oferta liberada!</p>
+          <span class="seta-pulo" style="font-size:24px;color:#fff;">▼</span>
+       </div>
+
+       <!-- OVERLAY FORM -->
+       <div id="overlay"
+          style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:3;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:#2b1a12;">
+
+          <div style="width:100%;">
+
+             <p style="font-size:18px;margin-bottom:16px;">
+                🔓 Preencha para desbloquear o vídeo
+             </p>
+
+             <input id="nomeLead" placeholder="Seu nome"
+                style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:10px;font-size:16px;">
+
+             <input id="whatsLead" placeholder="Seu WhatsApp"
+                style="width:100%;padding:14px;border-radius:10px;border:1px solid #8a6b55;background:#3b2418;color:#F5E6D3;margin-bottom:12px;font-size:16px;">
+
+             <button id="btnEnviar"
+                style="width:100%;padding:16px;border-radius:12px;border:none;background:#CE04C0;color:#fff;font-weight:600;font-size:17px;cursor:pointer;">
+                Desbloquear vídeo
+             </button>
+
+          </div>
+       </div>
+
+    </div>
+
+    <!-- TIMER -->
+    <div id="areaTimer" style="display:none;margin-top:20px;">
+       <p id="timerLabel" style="font-size:18px;margin-bottom:10px;">
+          ⏳ Oferta liberando em
+       </p>
+       <p id="timer" style="font-size:22px;font-weight:600;"></p>
+    </div>
+
+</div>
+
+<style>
+   input::placeholder {
+      color: #d9c3b0;
+   }
+
+   @keyframes setaPulo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+   }
+
+   .seta-pulo {
+      display: inline-block;
+      animation: setaPulo 1s ease-in-out infinite;
+   }
+</style>
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+
+      var embeds = document.querySelectorAll('[data-vsl-embed="vsl"]');
+      for (var i = 1; i < embeds.length; i++) embeds[i].remove();
+
+      var root = document.getElementById("vslRoot");
+      if (!root) return;
+
+      var btn = root.querySelector("#btnEnviar");
+      var nome = root.querySelector("#nomeLead");
+      var whats = root.querySelector("#whatsLead");
+      var videoBox = root.querySelector("#videoBox");
+      var overlay = root.querySelector("#overlay");
+      var blockTop = root.querySelector("#blockTop");
+      var blockBottom = root.querySelector("#blockBottom");
+      var blockLeft = root.querySelector("#blockLeft");
+      var blockRight = root.querySelector("#blockRight");
+      var player = root.querySelector("#vslPlayer");
+      var areaTimer = root.querySelector("#areaTimer");
+      var timer = root.querySelector("#timer");
+      var timerLabel = root.querySelector("#timerLabel");
+      var ofertaLiberada = root.querySelector("#ofertaLiberada");
+
+      var liberarEm = TEMPO_LIBERACAO_SEGUNDOS; // ex: 585 = 9:45 | 660 = 11:00
+
+      function centralizarVideo() {
+         videoBox.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      function onlyDigits(str) {
+         let out = "";
+         for (let i = 0; i < str.length && out.length < 11; i++) {
+            let c = str.charCodeAt(i);
+            if (c >= 48 && c <= 57) out += str[i];
+         }
+         return out;
+      }
+
+      function formatPhoneBR(d) {
+         if (!d) return "";
+         if (d.length <= 2) return "(" + d;
+         if (d.length <= 6) return "(" + d.slice(0, 2) + ") " + d.slice(2);
+         if (d.length <= 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+         return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7, 11);
+      }
+
+      function validarTelefoneBR(valor) {
+         const digits = onlyDigits(valor);
+         return digits.length === 10 || digits.length === 11;
+      }
+
+      whats.addEventListener("input", function () {
+         const digits = onlyDigits(this.value);
+         this.value = formatPhoneBR(digits);
+      });
+
+      function iniciarTimer() {
+
+         var inicio = Date.now();
+
+         function atualizar() {
+
+            var agora = Date.now();
+            var s = Math.floor((agora - inicio) / 1000);
+            var restante = liberarEm - s;
+
+            if (restante <= 0) {
+
+               timerLabel.innerHTML = "✅ Oferta liberada!";
+               timer.innerHTML =
+                  '<a href="LINK_DO_BOTAO_CTA" target="_blank" style="display:block;padding:18px;background:#1f5c3f;color:#fff;border-radius:12px;text-decoration:none;font-size:18px;font-weight:600;">TEXTO_DO_BOTAO_CTA</a>';
+
+               ofertaLiberada.style.display = "block";
+
+               return;
+            }
+
+            var m = Math.floor(restante / 60);
+            var sec = restante % 60;
+            if (sec < 10) sec = "0" + sec;
+
+            timer.innerHTML = m + ":" + sec;
+
+            setTimeout(atualizar, 1000);
+
+         }
+
+         atualizar();
+      }
+
+      btn.onclick = function () {
+
+         var n = nome.value.trim();
+         var w = whats.value;
+
+         if (n.length < 2) {
+            alert("Digite seu nome");
+            return;
+         }
+
+         if (!validarTelefoneBR(w)) {
+            alert("Digite um WhatsApp válido");
+            return;
+         }
+
+         overlay.style.display = "none";
+         areaTimer.style.display = "block";
+         blockTop.style.display = "block";
+         blockBottom.style.display = "block";
+         blockLeft.style.display = "block";
+         blockRight.style.display = "block";
+
+         player.src = "https://www.youtube-nocookie.com/embed/ID_DO_VIDEO_YOUTUBE?enablejsapi=1&autoplay=1&playsinline=1&controls=0&rel=0&modestbranding=1";
+
+         setTimeout(function () {
+            player.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', "*");
+         }, 800);
+
+         setTimeout(centralizarVideo, 400);
+
+         iniciarTimer();
+
+         try {
+            fetch("URL_DO_WEBHOOK", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify({
+                  nome: n,
+                  whatsapp: onlyDigits(w),
+                  pagina: window.location.href,
+                  utm: window.location.search,
+                  data: new Date().toISOString()
+               })
+            });
+         } catch (e) { }
+
+      };
+
+   });
+</script>
